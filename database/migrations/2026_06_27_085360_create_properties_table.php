@@ -37,10 +37,6 @@ return new class extends Migration
             $table->boolean('has_balcony')->default(false);
             $table->boolean('has_garden')->default(false);
 
-            $table->boolean('has_document')->default(false);
-            $table->boolean('has_building_permit')->default(false);
-            $table->boolean('has_completion_permit')->default(false);
-
             $table->foreignId('status_id')->nullable()->constrained('property_statuses');
             $table->bigInteger('price')->nullable()->comment('rial');
             $table->boolean('is_sold')->default(false);
