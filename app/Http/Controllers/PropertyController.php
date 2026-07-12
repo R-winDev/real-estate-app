@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePropertyRequest;
 use App\Models\Location;
 use App\Models\Property;
 use App\Models\PropertyStatus;
 use App\Models\PropertyType;
-use Illuminate\Http\Request;
+use App\Models\User;
 
 class PropertyController extends Controller
 {
@@ -22,13 +23,15 @@ class PropertyController extends Controller
         $locations = Location::pluck('name', 'id')->toArray();
         $propertyTypes = PropertyType::pluck('name', 'id')->toArray();
         $propertyStatuses = PropertyStatus::pluck('name', 'id')->toArray();
+        $users = User::pluck('name', 'id')->toArray();
 
-        return view('properties.create', compact('locations', 'propertyTypes', 'propertyStatuses'));
+        return view('properties.create', compact('locations', 'propertyTypes', 'propertyStatuses', 'users'));
     }
 
-    public function store(Request $request)
+    public function store(StorePropertyRequest $request)
     {
-        Property::create($request->all());
+        Property::create($request->validated());
+
         return redirect()->route('properties.index');
     }
 }
