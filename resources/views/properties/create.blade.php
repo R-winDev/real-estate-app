@@ -22,6 +22,7 @@
         <x-form-textarea name="description" label="توضیحات" />
         <x-form-input name="area_total" type="number" label="متراژ"/>
         <x-form-input name="area_useful" type="number" label="متراژ مفید"/>
+        <x-form-input name="year_built" type="number" label="سال ساخت"/>
 
         <x-form-checkbox name="has_parking" label="پارکینگ"/>
         <x-form-checkbox name="has_elevator" label="آسانسور"/>

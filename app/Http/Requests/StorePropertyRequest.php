@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidYearBuilt;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePropertyRequest extends FormRequest
@@ -30,7 +31,7 @@ class StorePropertyRequest extends FormRequest
             'land_length' => 'nullable|numeric|min:0',
             'land_width' => 'nullable|numeric|min:0',
             'land_area' => 'nullable|numeric|min:0',
-            'year_built' => 'nullable|integer|min:1300',
+            'year_built' => ['nullable', 'integer', new ValidYearBuilt],
             'orientation' => 'nullable|string|in:north,south,east,west',
 
             'bedrooms' => 'nullable|integer|min:0',

@@ -107,7 +107,7 @@ class PropertyValidationTest extends TestCase
         $response->assertSessionHasErrors('area_total');
     }
 
-    public function test_year_built_can_not_be_less_than_1300(): void
+    public function test_year_built_fail_validation(): void
     {
         $user = User::factory()->create();
 
@@ -119,6 +119,23 @@ class PropertyValidationTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('year_built');
+    }
+
+    /**
+     * @throws \JsonException
+     */
+    public function test_year_built_passe_validation(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('properties.store'), [
+            'title' => 'ملک تست',
+            'price' => 2500000000,
+            'area_total' => 120.50,
+            'year_built' => 1404,
+        ]);
+
+        $response->assertSessionHasNoErrors();
     }
 
     public function test_type_id_must_exist_in_property_types(): void

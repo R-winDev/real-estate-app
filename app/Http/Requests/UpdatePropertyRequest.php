@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidYearBuilt;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -31,7 +32,7 @@ class UpdatePropertyRequest extends FormRequest
             'land_length' => 'sometimes|nullable|numeric|min:0',
             'land_width' => 'sometimes|nullable|numeric|min:0',
             'land_area' => 'sometimes|nullable|numeric|min:0',
-            'year_built' => 'sometimes|nullable|integer|min:1300',
+            'year_built' => ['sometimes', 'nullable', 'integer', new ValidYearBuilt],
             'orientation' => 'sometimes|nullable|string|in:north,south,east,west',
 
             'bedrooms' => 'sometimes|nullable|integer|min:0',
