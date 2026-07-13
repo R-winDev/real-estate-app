@@ -3,13 +3,7 @@
         <h2>ایجاد ملک جدید</h2>
     </x-slot>
 
-    @if($errors->any())
-        <div>
-            @foreach($errors->all() as $error)
-                <x-alert type="danger">{{ $error }}</x-alert>
-            @endforeach
-        </div>
-    @endif
+
 
     <form action="{{ route('properties.store') }}" method="POST">
         @csrf

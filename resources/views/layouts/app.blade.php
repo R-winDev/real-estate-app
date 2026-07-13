@@ -28,6 +28,7 @@
             @endisset
 
             <!-- Page Content -->
+            <x-flash-message/> <x-error-summary/>
             <main>
                 {{ $slot }}
             </main>

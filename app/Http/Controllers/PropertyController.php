@@ -32,6 +32,6 @@ class PropertyController extends Controller
     {
         Property::create($request->validated());
 
-        return redirect()->route('properties.index');
+        return redirect()->route('properties.index')->with('success', 'ملک با موفقیت ثبت شد');
     }
 }
