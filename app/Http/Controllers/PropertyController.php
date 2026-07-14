@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePropertyRequest;
+use App\Http\Requests\UpdatePropertyRequest;
 use App\Models\Location;
 use App\Models\Property;
 use App\Models\PropertyStatus;
@@ -33,5 +34,29 @@ class PropertyController extends Controller
         Property::create($request->validated());
 
         return redirect()->route('properties.index')->with('success', 'ملک با موفقیت ثبت شد');
+    }
+
+    public function show(Property $property)
+    {
+        return view('properties.show', compact('property'));
+    }
+
+    public function edit(Property $property)
+    {
+        return view('properties.edit', compact('property'));
+    }
+
+    public function update(UpdatePropertyRequest $request, Property $property)
+    {
+        $property->update($request->validated());
+
+        return redirect()->route('properties.index')->with('success', 'ملک با موفیقت به روزرسانی شد.');
+    }
+
+    public function destroy(Property $property)
+    {
+        $property->delete();
+
+        return redirect()->route('properties.index')->with('success', 'ملک حذف شد');
     }
 }

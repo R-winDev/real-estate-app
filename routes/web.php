@@ -8,8 +8,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/properties', [PropertyController::class, 'index'])->name('properties.index');
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -21,8 +19,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/properties/create', [PropertyController::class, 'create'])->name('properties.create');
-    Route::post('/properties', [PropertyController::class, 'store'])->name('properties.store');
+    Route::resource('properties', PropertyController::class);
 });
 
 require __DIR__.'/auth.php';
