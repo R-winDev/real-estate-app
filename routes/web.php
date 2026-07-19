@@ -18,8 +18,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::resource('properties', PropertyController::class);
-});
+Route::resource('properties', PropertyController::class)->except(['index', 'show'])->middleware('auth');
+
+Route::resource('properties', PropertyController::class)->only(['index', 'show']);
 
 require __DIR__.'/auth.php';

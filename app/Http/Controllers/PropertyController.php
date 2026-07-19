@@ -38,6 +38,8 @@ class PropertyController extends Controller
 
     public function show(Property $property)
     {
+        $property->load('location', 'type', 'status', 'owner');
+
         return view('properties.show', compact('property'));
     }
 
