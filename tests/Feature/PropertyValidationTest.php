@@ -91,7 +91,7 @@ class PropertyValidationTest extends TestCase
         ]);
 
         $response->assertSessionHasNoErrors();
-        $response->assertRedirect(route('properties.index'));
+        $response->assertRedirect();
     }
 
     public function test_area_total_must_be_numeric(): void

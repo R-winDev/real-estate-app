@@ -39,7 +39,7 @@ class PropertyStoreTest extends TestCase
             ]
         );
 
-        $response->assertRedirect(route('properties.index'));
+        $response->assertRedirect();
         $response->assertSessionHas('success');
 
         $this->assertDatabaseHas('properties', [

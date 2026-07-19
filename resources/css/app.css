@@ -1,3 +1,147 @@
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    html {
+        direction: rtl;
+        font-family: 'Vazirmatn', sans-serif;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-surface-50 text-surface-800 antialiased;
+    }
+
+    ::selection {
+        @apply bg-brand-200 text-brand-900;
+    }
+
+    /* RTL margin/padding utilities */
+    [dir="rtl"] .ms-1 { margin-right: 0.25rem; margin-left: 0; }
+    [dir="rtl"] .ms-2 { margin-right: 0.5rem; margin-left: 0; }
+    [dir="rtl"] .ms-3 { margin-right: 0.75rem; margin-left: 0; }
+    [dir="rtl"] .ms-4 { margin-right: 1rem; margin-left: 0; }
+    [dir="rtl"] .ms-6 { margin-right: 1.5rem; margin-left: 0; }
+    [dir="rtl"] .ms-10 { margin-right: 2.5rem; margin-left: 0; }
+    [dir="rtl"] .me-2 { margin-left: 0.5rem; margin-right: 0; }
+    [dir="rtl"] .ps-3 { padding-right: 0.75rem; padding-left: 0; }
+    [dir="rtl"] .pe-2 { padding-left: 0.5rem; padding-right: 0; }
+}
+
+@layer components {
+    /* ─── Form Inputs ─── */
+    .form-input {
+        @apply block w-full rounded-base border-surface-200 bg-white px-4 py-2.5 text-sm text-surface-800
+               shadow-sm transition-all duration-200
+               placeholder:text-surface-400
+               focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none
+               hover:border-surface-300;
+    }
+
+    .form-select {
+        @apply block w-full rounded-base border-surface-200 bg-white px-4 py-2.5 text-sm text-surface-800
+               shadow-sm transition-all duration-200
+               focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none
+               hover:border-surface-300;
+    }
+
+    .form-textarea {
+        @apply block w-full rounded-base border-surface-200 bg-white px-4 py-2.5 text-sm text-surface-800
+               shadow-sm transition-all duration-200
+               placeholder:text-surface-400
+               focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none
+               hover:border-surface-300;
+    }
+
+    .form-checkbox {
+        @apply rounded border-surface-300 text-brand-600 shadow-sm
+               focus:ring-2 focus:ring-brand-500/20 focus:ring-offset-0;
+    }
+
+    /* ─── Buttons ─── */
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-base bg-brand-600 px-5 py-2.5
+               text-sm font-semibold text-white shadow-sm transition-all duration-200
+               hover:bg-brand-700 hover:shadow-md hover:-translate-y-0.5
+               focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2
+               active:translate-y-0 active:shadow-sm
+               disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-sm;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 rounded-base border border-surface-200
+               bg-white px-5 py-2.5 text-sm font-semibold text-surface-700 shadow-sm transition-all duration-200
+               hover:bg-surface-50 hover:border-surface-300 hover:shadow-md hover:-translate-y-0.5
+               focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2
+               active:translate-y-0 active:shadow-sm;
+    }
+
+    .btn-danger {
+        @apply inline-flex items-center justify-center gap-2 rounded-base bg-red-600 px-5 py-2.5
+               text-sm font-semibold text-white shadow-sm transition-all duration-200
+               hover:bg-red-700 hover:shadow-md hover:-translate-y-0.5
+               focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2
+               active:translate-y-0 active:shadow-sm
+               disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-sm;
+    }
+
+    /* ─── Cards ─── */
+    .card {
+        @apply rounded-2xl bg-white shadow-card transition-all duration-300;
+    }
+
+    .card-hover {
+        @apply card hover:shadow-card-hover hover:-translate-y-1;
+    }
+
+    /* ─── Glass Effects ─── */
+    .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .glass-strong {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px) saturate(200%);
+        -webkit-backdrop-filter: blur(20px) saturate(200%);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .glass-dark {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* ─── Gradient Text ─── */
+    .text-gradient {
+        @apply bg-clip-text text-transparent bg-gradient-to-l from-brand-600 to-brand-400;
+    }
+
+    /* ─── Section Utilities ─── */
+    .section-padding {
+        @apply py-16 md:py-20;
+    }
+
+    .container-wide {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    /* ─── Reduced Motion ─── */
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        html {
+            scroll-behavior: auto;
+        }
+    }
+}

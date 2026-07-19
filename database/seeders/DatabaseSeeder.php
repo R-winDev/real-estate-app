@@ -10,14 +10,12 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'مدیر سیستم',
+            'email' => 'admin@example.com',
+            'is_admin' => true,
         ]);
 
         User::factory(10)->create();
@@ -27,6 +25,10 @@ class DatabaseSeeder extends Seeder
             PropertyTypeSeeder::class,
             PropertyStatusSeeder::class,
             FeatureSeeder::class,
+            ClimateSystemSeeder::class,
+            FloorMaterialSeeder::class,
+            BuildingMaterialSeeder::class,
+            DocumentSeeder::class,
             PropertySeeder::class,
         ]);
     }
