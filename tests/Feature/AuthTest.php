@@ -51,7 +51,7 @@ class AuthTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('login'));
 
-        $response->assertRedirect(route('dashboard'));
+        $response->assertRedirect(route('properties.index'));
     }
 
     // ========================
@@ -71,7 +71,7 @@ class AuthTest extends TestCase
             'remember' => 'on',
         ]);
 
-        $response->assertRedirect(route('dashboard'));
+        $response->assertRedirect(route('properties.index'));
         $this->assertAuthenticatedAs($user);
     }
 
@@ -167,7 +167,7 @@ class AuthTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('register'));
 
-        $response->assertRedirect(route('dashboard'));
+        $response->assertRedirect(route('properties.index'));
     }
 
     // ========================
@@ -183,7 +183,7 @@ class AuthTest extends TestCase
             'password_confirmation' => 'password123',
         ]);
 
-        $response->assertRedirect(route('dashboard'));
+        $response->assertRedirect(route('properties.index'));
         $this->assertDatabaseHas('users', ['email' => 'newuser@example.com']);
         $this->assertAuthenticated();
     }

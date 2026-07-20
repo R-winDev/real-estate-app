@@ -21,29 +21,38 @@ class DashboardTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_dashboard_returns_ok_for_user(): void
+    public function test_dashboard_requires_admin(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => false]);
 
         $response = $this->actingAs($user)->get(route('dashboard'));
+
+        $response->assertForbidden();
+    }
+
+    public function test_dashboard_allows_admin(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $response = $this->actingAs($admin)->get(route('dashboard'));
 
         $response->assertOk();
     }
 
     public function test_dashboard_displays_dashboard_view(): void
     {
-        $user = User::factory()->create();
+        $admin = User::factory()->create(['is_admin' => true]);
 
-        $response = $this->actingAs($user)->get(route('dashboard'));
+        $response = $this->actingAs($admin)->get(route('dashboard'));
 
         $response->assertViewIs('dashboard');
     }
 
     public function test_dashboard_has_stats(): void
     {
-        $user = User::factory()->create();
+        $admin = User::factory()->create(['is_admin' => true]);
 
-        $response = $this->actingAs($user)->get(route('dashboard'));
+        $response = $this->actingAs($admin)->get(route('dashboard'));
 
         $response->assertViewHas('stats');
         $stats = $response->viewData('stats');
@@ -55,18 +64,18 @@ class DashboardTest extends TestCase
 
     public function test_dashboard_has_recent_properties(): void
     {
-        $user = User::factory()->create();
+        $admin = User::factory()->create(['is_admin' => true]);
 
-        $response = $this->actingAs($user)->get(route('dashboard'));
+        $response = $this->actingAs($admin)->get(route('dashboard'));
 
         $response->assertViewHas('recentProperties');
     }
 
     public function test_dashboard_shows_welcome_message(): void
     {
-        $user = User::factory()->create(['name' => 'علی']);
+        $admin = User::factory()->create(['is_admin' => true, 'name' => 'علی']);
 
-        $response = $this->actingAs($user)->get(route('dashboard'));
+        $response = $this->actingAs($admin)->get(route('dashboard'));
 
         $response->assertSee('علی');
         $response->assertSee('خوش آمدید');
@@ -74,22 +83,22 @@ class DashboardTest extends TestCase
 
     public function test_dashboard_shows_stats_counts(): void
     {
-        $user = User::factory()->create();
+        $admin = User::factory()->create(['is_admin' => true]);
         Location::factory()->count(3)->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
         Property::factory()->count(3)->create(['is_sold' => false]);
 
-        $response = $this->actingAs($user)->get(route('dashboard'));
+        $response = $this->actingAs($admin)->get(route('dashboard'));
 
         $response->assertSee('3');
     }
 
     public function test_dashboard_has_create_button(): void
     {
-        $user = User::factory()->create();
+        $admin = User::factory()->create(['is_admin' => true]);
 
-        $response = $this->actingAs($user)->get(route('dashboard'));
+        $response = $this->actingAs($admin)->get(route('dashboard'));
 
         $response->assertSee('ملک جدید');
     }

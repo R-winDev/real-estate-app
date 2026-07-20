@@ -1,40 +1,4 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <title>{{ config('app.name', 'املاک') }}</title>
-
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased bg-surface-50">
-        <!-- Navigation -->
-        <header class="glass-strong sticky top-0 z-50 border-b border-white/20 shadow-soft">
-            <div class="container-wide">
-                <div class="flex justify-between items-center h-16">
-                    <div class="flex items-center gap-3">
-                        <x-application-logo class="h-8 w-auto text-brand-600" />
-                        <span class="text-xl font-extrabold text-surface-900 tracking-tight">املاک</span>
-                    </div>
-
-                    @if (Route::has('login'))
-                        <nav class="flex items-center gap-3">
-                            <a href="{{ route('properties.index') }}" class="text-sm font-medium text-surface-600 hover:text-surface-900 transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-surface-100/60">املاک</a>
-                            @auth
-                                <a href="{{ route('dashboard') }}" class="text-sm font-medium text-surface-600 hover:text-surface-900 transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-surface-100/60">داشبورد</a>
-                            @else
-                                <a href="{{ route('login') }}" class="text-sm font-medium text-surface-600 hover:text-surface-900 transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-surface-100/60">ورود</a>
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="btn-primary text-sm btn-sm">ثبت نام</a>
-                                @endif
-                            @endauth
-                        </nav>
-                    @endif
-                </div>
-            </div>
-        </header>
-
+<x-app-layout>
         <!-- Hero Section -->
         <section class="relative bg-gradient-to-br from-brand-700 via-brand-800 to-surface-900 text-white overflow-hidden">
             <!-- Animated background blobs -->
@@ -68,7 +32,7 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                             مشاهده املاک
                         </a>
-                        @auth
+                        @admin
                             <a href="{{ route('properties.create') }}" class="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-4 rounded-2xl font-bold text-base hover:bg-white/20 transition-all duration-300">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 ثبت ملک جدید
@@ -77,7 +41,7 @@
                             <a href="{{ route('register') }}" class="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-4 rounded-2xl font-bold text-base hover:bg-white/20 transition-all duration-300">
                                 شروع رایگان
                             </a>
-                        @endauth
+                        @endadmin
                     </div>
                 </div>
             </div>
@@ -178,6 +142,5 @@
                     <p class="text-surface-500 text-sm">تمامی حقوق این وب‌سایت متعلق به املاک است.</p>
                 </div>
             </div>
-        </footer>
-    </body>
-</html>
+    </footer>
+</x-app-layout>

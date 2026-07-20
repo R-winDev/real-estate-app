@@ -38,7 +38,7 @@ Route::get('/dashboard', function () {
         ->get();
 
     return view('dashboard', compact('stats', 'recentProperties'));
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'admin'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('properties', PropertyController::class)->except(['index', 'show'])->middleware('auth');
+Route::resource('properties', PropertyController::class)->except(['index', 'show'])->middleware(['auth', 'admin']);
 
 Route::resource('properties', PropertyController::class)->only(['index', 'show']);
 

@@ -14,7 +14,7 @@ class PropertyRouteTest extends TestCase
 
     public function test_update_route_changes_property(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         $property = Property::factory()->create(['title' => 'old']);
 
         $response = $this->actingAs($user)->put("/properties/{$property->id}", ['title' => 'new', 'price' => 200000]);
@@ -24,7 +24,7 @@ class PropertyRouteTest extends TestCase
 
     public function test_destroy_route_deletes_property(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         $property = Property::factory()->create();
 
         $this->actingAs($user)->delete("/properties/{$property->id}");

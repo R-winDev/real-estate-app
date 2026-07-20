@@ -17,11 +17,11 @@
                     <x-nav-link :href="route('properties.index')" :active="request()->routeIs('properties.*')">
                         املاک
                     </x-nav-link>
-                    @auth
+                    @admin
                         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                             داشبورد
                         </x-nav-link>
-                    @endauth
+                    @endadmin
                 </div>
             </div>
 
@@ -91,11 +91,11 @@
             <x-responsive-nav-link :href="route('properties.index')" :active="request()->routeIs('properties.*')">
                 املاک
             </x-responsive-nav-link>
-            @auth
+            @admin
                 <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                     داشبورد
                 </x-responsive-nav-link>
-            @endauth
+            @endadmin
         </div>
 
         @auth

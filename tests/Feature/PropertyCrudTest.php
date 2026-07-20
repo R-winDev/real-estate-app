@@ -139,11 +139,11 @@ class PropertyCrudTest extends TestCase
         $this->assertCount(1, $properties);
     }
 
-    public function test_index_has_create_button_for_auth_user(): void
+    public function test_index_has_create_button_for_admin(): void
     {
-        $user = User::factory()->create();
+        $admin = User::factory()->create(['is_admin' => true]);
 
-        $response = $this->actingAs($user)->get(route('properties.index'));
+        $response = $this->actingAs($admin)->get(route('properties.index'));
 
         $response->assertSee('افزودن ملک');
     }
@@ -168,7 +168,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_create_returns_ok_for_auth_user(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->get(route('properties.create'));
 
@@ -177,7 +177,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_create_displays_create_view(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->get(route('properties.create'));
 
@@ -186,7 +186,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_create_has_form_with_required_fields(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->get(route('properties.create'));
 
@@ -198,7 +198,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_create_has_all_field_groups(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->get(route('properties.create'));
 
@@ -210,7 +210,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_create_has_amenities_checkboxes(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->get(route('properties.create'));
 
@@ -223,7 +223,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_create_loads_select_options(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create(['name' => 'تهران']);
         PropertyType::factory()->create(['name_fa' => 'آپارتمان']);
         PropertyStatus::factory()->create(['name_fa' => 'فعال']);
@@ -248,7 +248,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_creates_property_in_database(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         $location = Location::factory()->create();
         $type = PropertyType::factory()->create();
         $status = PropertyStatus::factory()->create();
@@ -273,7 +273,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_redirects_to_show_page(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         $location = Location::factory()->create();
         $type = PropertyType::factory()->create();
         $status = PropertyStatus::factory()->create();
@@ -292,7 +292,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_success_flash_message(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         $location = Location::factory()->create();
         $type = PropertyType::factory()->create();
         $status = PropertyStatus::factory()->create();
@@ -310,7 +310,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_increments_database_count(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -327,7 +327,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_validation_requires_title(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'price' => 5000000000,
@@ -338,7 +338,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_validation_requires_valid_type_id(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -350,7 +350,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_validation_requires_valid_status_id(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -362,7 +362,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_validation_requires_valid_location_id(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -374,7 +374,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_validation_requires_valid_owner_id(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -386,7 +386,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_validation_price_must_be_integer(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -398,7 +398,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_validation_bedrooms_cannot_be_negative(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -410,7 +410,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_validation_fails_with_empty_data(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), []);
 
@@ -420,7 +420,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_validates_orientation(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -432,7 +432,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_store_saves_boolean_fields_correctly(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         $location = Location::factory()->create();
         $type = PropertyType::factory()->create();
         $status = PropertyStatus::factory()->create();
@@ -563,7 +563,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_show_has_edit_button_for_auth_user(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -649,7 +649,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_edit_returns_ok_for_auth_user(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -662,7 +662,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_edit_displays_edit_view(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -675,7 +675,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_edit_has_form_with_property_data(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -689,7 +689,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_edit_has_update_form_with_patch_method(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -703,7 +703,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_edit_has_all_form_sections(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -735,7 +735,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_update_changes_property_in_database(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -751,7 +751,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_update_redirects_to_show_page(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -767,7 +767,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_update_success_flash_message(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -783,7 +783,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_update_validates_title_when_provided(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -799,7 +799,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_update_validates_price_must_be_integer(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -814,7 +814,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_update_validates_type_id_exists(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -829,7 +829,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_update_partial_data(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -861,7 +861,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_destroy_deletes_property_from_database(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -874,7 +874,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_destroy_redirects_to_index(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -887,7 +887,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_destroy_success_flash_message(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();
@@ -900,7 +900,7 @@ class PropertyCrudTest extends TestCase
 
     public function test_destroy_decrements_database_count(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         Location::factory()->create();
         PropertyType::factory()->create();
         PropertyStatus::factory()->create();

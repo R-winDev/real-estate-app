@@ -12,7 +12,7 @@ class PropertyFlashMessageTest extends TestCase
 
     public function test_successful_store_flash_message(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'Test Property Flash Message',
@@ -24,7 +24,7 @@ class PropertyFlashMessageTest extends TestCase
 
     public function test_failed_store_flash_message(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), []);
 

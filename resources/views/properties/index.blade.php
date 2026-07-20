@@ -2,12 +2,20 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-bold text-xl text-surface-900 leading-tight">لیست املاک</h2>
-            @auth
-                <a href="{{ route('properties.create') }}" class="btn-primary btn-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    افزودن ملک
-                </a>
-            @endauth
+            <div class="flex items-center gap-3">
+                @auth
+                    <a href="{{ route('profile.edit') }}" class="btn-secondary btn-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        پروفایل
+                    </a>
+                @endauth
+                @admin
+                    <a href="{{ route('properties.create') }}" class="btn-primary btn-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        افزودن ملک
+                    </a>
+                @endadmin
+            </div>
         </div>
     </x-slot>
 
@@ -56,9 +64,9 @@
                     </div>
                     <h3 class="text-xl font-bold text-surface-700 mb-2">ملکی یافت نشد</h3>
                     <p class="text-surface-500 mb-6">هیچ ملکی با فیلترهای انتخابی یافت نشد.</p>
-                    @auth
+                    @admin
                         <a href="{{ route('properties.create') }}" class="btn-primary">ثبت ملک جدید</a>
-                    @endauth
+                    @endadmin
                 </div>
             @else
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -19,7 +19,7 @@ class PropertyStoreTest extends TestCase
      */
     public function test_store_creates_property_in_database(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
         $location = Location::factory()->create();
         $type = PropertyType::factory()->create();
         $status = PropertyStatus::factory()->create();
@@ -56,7 +56,7 @@ class PropertyStoreTest extends TestCase
      */
     public function test_title_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'price' => 5000000000,
@@ -70,7 +70,7 @@ class PropertyStoreTest extends TestCase
      */
     public function test_validation_fails_with_empty_data(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), []);
 
@@ -95,7 +95,7 @@ class PropertyStoreTest extends TestCase
      */
     public function test_store_only_saves_validated_fields(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(
             route('properties.store'),
@@ -119,7 +119,7 @@ class PropertyStoreTest extends TestCase
      */
     public function test_successful_store_increments_database_count(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $this->assertDatabaseCount('properties', 0);
 

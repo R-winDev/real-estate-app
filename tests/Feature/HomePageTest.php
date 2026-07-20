@@ -75,11 +75,20 @@ class HomePageTest extends TestCase
         $response->assertSee('ورود');
     }
 
-    public function test_home_page_shows_dashboard_for_auth_user(): void
+    public function test_home_page_hides_dashboard_for_regular_user(): void
     {
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get(route('home'));
+
+        $response->assertDontSee('داشبورد');
+    }
+
+    public function test_home_page_shows_dashboard_for_admin(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $response = $this->actingAs($admin)->get(route('home'));
 
         $response->assertSee('داشبورد');
     }

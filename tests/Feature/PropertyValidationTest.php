@@ -12,7 +12,7 @@ class PropertyValidationTest extends TestCase
 
     public function test_title_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), []);
 
@@ -21,7 +21,7 @@ class PropertyValidationTest extends TestCase
 
     public function test_title_must_be_string(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 12345,
@@ -32,7 +32,7 @@ class PropertyValidationTest extends TestCase
 
     public function test_price_must_be_integer(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -44,7 +44,7 @@ class PropertyValidationTest extends TestCase
 
     public function test_bedrooms_cannot_be_negative(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -56,7 +56,7 @@ class PropertyValidationTest extends TestCase
 
     public function test_orientation_must_be_valid(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -68,7 +68,7 @@ class PropertyValidationTest extends TestCase
 
     public function test_owner_id_must_exist_in_users(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -80,7 +80,7 @@ class PropertyValidationTest extends TestCase
 
     public function test_valid_data_passes_validation(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -96,7 +96,7 @@ class PropertyValidationTest extends TestCase
 
     public function test_area_total_must_be_numeric(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -109,7 +109,7 @@ class PropertyValidationTest extends TestCase
 
     public function test_year_built_fail_validation(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -126,7 +126,7 @@ class PropertyValidationTest extends TestCase
      */
     public function test_year_built_passe_validation(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
@@ -140,7 +140,7 @@ class PropertyValidationTest extends TestCase
 
     public function test_type_id_must_exist_in_property_types(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
