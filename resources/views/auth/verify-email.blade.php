@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="mb-6 text-center">
+    <div class="mb-8 text-center">
         <h2 class="text-2xl font-bold text-surface-900">تایید ایمیل</h2>
     </div>
 
@@ -8,7 +8,7 @@
     </div>
 
     @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600">
+        <div class="mb-4 font-medium text-sm text-emerald-600">
             لینک تایید جدید به آدرس ایمیلی که هنگام ثبت نام وارد کردید ارسال شد.
         </div>
     @endif

@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="mb-6 text-center">
+    <div class="mb-8 text-center">
         <h2 class="text-2xl font-bold text-surface-900">تایید هویت</h2>
     </div>
 

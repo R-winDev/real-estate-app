@@ -32,7 +32,7 @@
             @if (session('status') === 'password-updated')
                 <p x-data="{ show: true }" x-show="show" x-transition
                    x-init="setTimeout(() => show = false, 2000)"
-                   class="text-sm text-green-600">ذخیره شد.</p>
+                   class="text-sm text-emerald-600">ذخیره شد.</p>
             @endif
         </div>
     </form>

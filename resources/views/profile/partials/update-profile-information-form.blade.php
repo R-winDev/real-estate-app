@@ -33,7 +33,7 @@
                     </p>
 
                     @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600">
+                        <p class="mt-2 font-medium text-sm text-emerald-600">
                             لینک تایید جدید به آدرس ایمیل شما ارسال شد.
                         </p>
                     @endif
@@ -47,7 +47,7 @@
             @if (session('status') === 'profile-updated')
                 <p x-data="{ show: true }" x-show="show" x-transition
                    x-init="setTimeout(() => show = false, 2000)"
-                   class="text-sm text-green-600">ذخیره شد.</p>
+                   class="text-sm text-emerald-600">ذخیره شد.</p>
             @endif
         </div>
     </form>

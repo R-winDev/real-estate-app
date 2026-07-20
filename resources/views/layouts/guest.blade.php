@@ -9,13 +9,15 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 relative overflow-hidden">
+    <body class="font-sans antialiased">
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gradient-to-br from-brand-800 via-brand-900 to-surface-900 relative overflow-hidden">
             <!-- Background decoration -->
             <div class="absolute inset-0 overflow-hidden pointer-events-none">
-                <div class="absolute -top-40 -right-40 w-80 h-80 bg-brand-400/10 rounded-full blur-3xl animate-float"></div>
-                <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-brand-300/10 rounded-full blur-3xl animate-float-slow"></div>
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-500/5 rounded-full blur-3xl"></div>
+                <div class="absolute -top-40 -right-40 w-[500px] h-[500px] bg-brand-400/8 rounded-full blur-3xl animate-float"></div>
+                <div class="absolute -bottom-40 -left-40 w-[600px] h-[600px] bg-brand-300/6 rounded-full blur-3xl animate-float-slow"></div>
+                <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-500/4 rounded-full blur-3xl animate-float-slower"></div>
+                <!-- Grid pattern overlay -->
+                <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;"></div>
             </div>
 
             <div class="relative z-10">

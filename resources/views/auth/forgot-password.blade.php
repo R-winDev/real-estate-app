@@ -1,7 +1,7 @@
 <x-guest-layout>
-    <div class="mb-6 text-center">
+    <div class="mb-8 text-center">
         <h2 class="text-2xl font-bold text-surface-900">بازیابی رمز عبور</h2>
-        <p class="text-sm text-surface-500 mt-1">رمز عبور خود را بازیابی کنید</p>
+        <p class="text-sm text-surface-500 mt-2">رمز عبور خود را بازیابی کنید</p>
     </div>
 
     <div class="mb-4 text-sm text-surface-600 leading-relaxed">

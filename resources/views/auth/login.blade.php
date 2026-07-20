@@ -1,7 +1,7 @@
 <x-guest-layout>
-    <div class="mb-6 text-center">
+    <div class="mb-8 text-center">
         <h2 class="text-2xl font-bold text-surface-900">ورود به حساب کاربری</h2>
-        <p class="text-sm text-surface-500 mt-1">خوش آمدید! لطفاً وارد حساب خود شوید.</p>
+        <p class="text-sm text-surface-500 mt-2">خوش آمدید! لطفاً وارد حساب خود شوید.</p>
     </div>
 
     <!-- Session Status -->

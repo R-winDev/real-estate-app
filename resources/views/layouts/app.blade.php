@@ -14,7 +14,7 @@
             @include('layouts.navigation')
 
             @isset($header)
-                <header class="bg-white/60 backdrop-blur-sm border-b border-surface-100">
+                <header class="bg-white/50 backdrop-blur-sm border-b border-surface-100/80">
                     <div class="container-wide py-5">
                         {{ $header }}
                     </div>
@@ -24,7 +24,7 @@
             <x-flash-message/>
             <x-error-summary/>
 
-            <main>
+            <main class="page-enter">
                 {{ $slot }}
             </main>
         </div>
