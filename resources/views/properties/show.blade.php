@@ -1,9 +1,19 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-bold text-xl text-surface-900 leading-tight">{{ $property->title }}</h2>
+    <div class="py-6">
+        <div class="container-wide">
+
+            {{-- Breadcrumb --}}
+            <div class="mb-5 flex items-center gap-2 text-sm">
+                <a href="{{ route('home') }}" class="text-surface-400 hover:text-surface-600 transition-colors">خانه</a>
+                <svg class="w-3 h-3 text-surface-300 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <a href="{{ route('properties.index') }}" class="text-surface-400 hover:text-surface-600 transition-colors">املاک</a>
+                <svg class="w-3 h-3 text-surface-300 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span class="text-surface-600 truncate">{{ $property->title }}</span>
+            </div>
+
+            {{-- Admin Actions Bar --}}
             @admin
-                <div class="flex gap-2">
+                <div class="flex items-center gap-2 mb-4">
                     <a href="{{ route('properties.edit', $property) }}" class="btn-secondary btn-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         ویرایش
@@ -19,161 +29,215 @@
                     </form>
                 </div>
             @endadmin
-        </div>
-    </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
+            {{-- Image Gallery --}}
+            <div class="mb-6" x-data="imageGallery()">
+                @if($property->images->count())
+                    {{-- Main Image --}}
+                    <div class="relative rounded-2xl overflow-hidden bg-surface-100 aspect-[16/9] mb-3">
+                        <img :src="images[currentIndex]?.url || images[0]?.url"
+                             :alt="images[currentIndex]?.caption || '{{ $property->title }}'"
+                             class="w-full h-full object-cover transition-opacity duration-300"
+                             x-ref="mainImage">
 
-            <!-- Back Link -->
-            <div class="mb-6">
-                <a href="{{ route('properties.index') }}" class="inline-flex items-center gap-2 text-sm text-surface-500 hover:text-surface-700 transition-colors duration-200 group">
-                    <svg class="w-4 h-4 rotate-180 transition-transform duration-200 group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    بازگشت به لیست املاک
-                </a>
+                        @if($property->images->count() > 1)
+                            <button @click="prev()" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-200">
+                                <svg class="w-5 h-5 text-surface-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+                            <button @click="next()" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-200">
+                                <svg class="w-5 h-5 text-surface-700 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+
+                            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-surface-900/60 backdrop-blur-sm text-white text-xs rounded-full font-medium">
+                                <span x-text="currentIndex + 1"></span> / <span x-text="images.length"></span>
+                            </div>
+                        @endif
+
+                        @if($property->status)
+                            <span class="absolute top-4 right-4 px-3 py-1.5 rounded-lg text-xs font-bold backdrop-blur-md
+                                {{ $property->status->slug === 'active' ? 'bg-emerald-500/90 text-white' : ($property->status->slug === 'sold' ? 'bg-amber-500/90 text-white' : 'bg-surface-600/90 text-white') }}">
+                                {{ $property->status->name_fa }}
+                            </span>
+                        @endif
+                    </div>
+
+                    {{-- Thumbnails --}}
+                    @if($property->images->count() > 1)
+                        <div class="flex gap-2 overflow-x-auto pb-1">
+                            @foreach($property->images->sortBy('sort_order') as $index => $image)
+                                <button @click="currentIndex = {{ $index }}"
+                                        :class="currentIndex === {{ $index }} ? 'ring-2 ring-brand-500 ring-offset-2' : 'opacity-60 hover:opacity-100'"
+                                        class="w-16 h-16 rounded-lg overflow-hidden shrink-0 transition-all duration-200">
+                                    <img src="{{ $image->url }}" alt="{{ $image->caption }}" class="w-full h-full object-cover">
+                                </button>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <script>
+                        function imageGallery() {
+                            return {
+                                currentIndex: 0,
+                                images: @json($property->images->sortBy('sort_order')->values()),
+                                next() {
+                                    this.currentIndex = (this.currentIndex + 1) % this.images.length;
+                                },
+                                prev() {
+                                    this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+                                }
+                            }
+                        }
+                    </script>
+                @else
+                    <div class="rounded-2xl overflow-hidden bg-surface-100 aspect-[16/9]">
+                        <img src="https://placehold.co/1200x675/e2e8f0/94a3b8?text={{ urlencode('تصویر ملک') }}" alt="{{ $property->title }}" class="w-full h-full object-cover">
+                    </div>
+                @endif
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                <!-- Main Content -->
-                <div class="lg:col-span-2 space-y-6">
-                    <!-- Image Placeholder -->
-                    <div class="card overflow-hidden">
-                        <div class="bg-gradient-to-br from-brand-100 via-brand-50 to-surface-100 h-72 md:h-96 flex items-center justify-center relative">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
-                            <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 20px 20px; color: #0f766e;"></div>
-                            <div class="text-center relative z-10">
-                                <svg class="w-20 h-20 text-brand-200 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                                <p class="text-brand-400 font-medium">تصویر ملک</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Title & Status -->
+                {{-- Main Content --}}
+                <div class="lg:col-span-2 space-y-5">
+                    {{-- Title & Price --}}
                     <div class="card p-6">
-                        <div class="flex flex-wrap justify-between items-start gap-3 mb-4">
+                        <div class="flex flex-wrap justify-between items-start gap-3 mb-3">
                             <h1 class="text-2xl font-extrabold text-surface-900">{{ $property->title }}</h1>
-                            @if($property->status)
-                                <span class="px-3 py-1.5 rounded-full text-sm font-bold
-                                    {{ $property->status->slug === 'active' ? 'badge-success' : ($property->status->slug === 'sold' ? 'badge-warning' : 'badge-neutral') }}">
-                                    {{ $property->status->name_fa }}
+                            @if($property->type)
+                                <span class="px-3 py-1 bg-brand-50 text-brand-700 rounded-lg text-sm font-medium border border-brand-100/60">
+                                    {{ $property->type->name_fa }}
                                 </span>
                             @endif
                         </div>
 
-                        @if($property->type)
-                            <span class="inline-block px-3 py-1 bg-brand-50 text-brand-700 rounded-full text-sm font-medium mb-4 border border-brand-100/60">
-                                {{ $property->type->name_fa }}
-                            </span>
+                        @if($property->location)
+                            <div class="flex items-center gap-2 text-sm text-surface-500 mb-4">
+                                <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                {{ $property->location->name }}
+                            </div>
                         @endif
 
-                        <!-- Price -->
-                        <div class="bg-gradient-to-l from-brand-50 to-brand-100/50 rounded-2xl p-5 mb-4 border border-brand-100/60">
+                        <div class="bg-gradient-to-l from-brand-50 to-brand-100/30 rounded-xl p-5 border border-brand-100/60">
                             <div class="text-sm text-brand-600 mb-1">قیمت</div>
-                            <div class="text-3xl font-extrabold text-brand-700">{{ number_format($property->price) }} <span class="text-lg">تومان</span></div>
+                            <div class="text-3xl font-extrabold text-brand-700">{{ number_format($property->price) }} <span class="text-lg font-bold">تومان</span></div>
                         </div>
 
-                        <!-- Description -->
                         @if($property->description)
-                            <div class="mt-4">
-                                <h3 class="font-bold text-surface-900 mb-2">توضیحات</h3>
-                                <p class="text-surface-600 leading-relaxed">{{ $property->description }}</p>
+                            <div class="mt-5">
+                                <h3 class="font-bold text-surface-900 mb-2 text-sm">توضیحات</h3>
+                                <p class="text-surface-600 leading-relaxed text-sm">{{ $property->description }}</p>
                             </div>
                         @endif
                     </div>
 
-                    <!-- Details Grid -->
+                    {{-- Key Specs --}}
                     <div class="card p-6">
-                        <h3 class="font-bold text-surface-900 mb-4">مشخصات ملک</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                            @if($property->area_total)
-                                <div class="bg-surface-50 rounded-xl p-4 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
-                                    <div class="text-xs text-surface-500 mb-1">متراژ کل</div>
-                                    <div class="font-bold text-surface-900">{{ number_format($property->area_total) }} متر مربع</div>
-                                </div>
-                            @endif
-                            @if($property->area_useful)
-                                <div class="bg-surface-50 rounded-xl p-4 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
-                                    <div class="text-xs text-surface-500 mb-1">متراژ مفید</div>
-                                    <div class="font-bold text-surface-900">{{ number_format($property->area_useful) }} متر مربع</div>
-                                </div>
-                            @endif
+                        <h3 class="font-bold text-surface-900 mb-4 text-sm">مشخصات کلیدی</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                             @if($property->bedrooms)
-                                <div class="bg-surface-50 rounded-xl p-4 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
-                                    <div class="text-xs text-surface-500 mb-1">اتاق خواب</div>
-                                    <div class="font-bold text-surface-900">{{ $property->bedrooms }} اتاق</div>
+                                <div class="text-center p-3 rounded-xl bg-surface-50 hover:bg-brand-50 transition-colors duration-200">
+                                    <svg class="w-5 h-5 text-surface-400 mx-auto mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                                    <div class="font-bold text-surface-900 text-sm">{{ $property->bedrooms }}</div>
+                                    <div class="text-[11px] text-surface-500">خواب</div>
                                 </div>
                             @endif
                             @if($property->bathrooms)
-                                <div class="bg-surface-50 rounded-xl p-4 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
-                                    <div class="text-xs text-surface-500 mb-1">سرویس بهداشتی</div>
-                                    <div class="font-bold text-surface-900">{{ $property->bathrooms }}</div>
+                                <div class="text-center p-3 rounded-xl bg-surface-50 hover:bg-brand-50 transition-colors duration-200">
+                                    <svg class="w-5 h-5 text-surface-400 mx-auto mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    <div class="font-bold text-surface-900 text-sm">{{ $property->bathrooms }}</div>
+                                    <div class="text-[11px] text-surface-500">سرویس</div>
                                 </div>
                             @endif
-                            @if($property->year_built)
-                                <div class="bg-surface-50 rounded-xl p-4 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
-                                    <div class="text-xs text-surface-500 mb-1">سال ساخت</div>
-                                    <div class="font-bold text-surface-900">{{ $property->year_built }}</div>
+                            @if($property->area_total)
+                                <div class="text-center p-3 rounded-xl bg-surface-50 hover:bg-brand-50 transition-colors duration-200">
+                                    <svg class="w-5 h-5 text-surface-400 mx-auto mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                                    <div class="font-bold text-surface-900 text-sm">{{ number_format($property->area_total) }}</div>
+                                    <div class="text-[11px] text-surface-500">متر مربع</div>
                                 </div>
                             @endif
                             @if($property->floor)
-                                <div class="bg-surface-50 rounded-xl p-4 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
-                                    <div class="text-xs text-surface-500 mb-1">طبقه</div>
-                                    <div class="font-bold text-surface-900">{{ $property->floor }} از {{ $property->total_floors }}</div>
-                                </div>
-                            @endif
-                            @if($property->parking_count)
-                                <div class="bg-surface-50 rounded-xl p-4 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
-                                    <div class="text-xs text-surface-500 mb-1">پارکینگ</div>
-                                    <div class="font-bold text-surface-900">{{ $property->parking_count }} عدد</div>
-                                </div>
-                            @endif
-                            @if($property->orientation)
-                                <div class="bg-surface-50 rounded-xl p-4 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
-                                    <div class="text-xs text-surface-500 mb-1">جهت ملک</div>
-                                    <div class="font-bold text-surface-900">{{ $property->orientation }}</div>
-                                </div>
-                            @endif
-                            @if($property->land_area)
-                                <div class="bg-surface-50 rounded-xl p-4 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
-                                    <div class="text-xs text-surface-500 mb-1">مساحت زمین</div>
-                                    <div class="font-bold text-surface-900">{{ number_format($property->land_area) }} متر مربع</div>
+                                <div class="text-center p-3 rounded-xl bg-surface-50 hover:bg-brand-50 transition-colors duration-200">
+                                    <svg class="w-5 h-5 text-surface-400 mx-auto mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg>
+                                    <div class="font-bold text-surface-900 text-sm">{{ $property->floor }}{{ $property->total_floors ? " از {$property->total_floors}" : '' }}</div>
+                                    <div class="text-[11px] text-surface-500">طبقه</div>
                                 </div>
                             @endif
                         </div>
                     </div>
 
-                    <!-- Amenities -->
+                    {{-- Full Details --}}
                     <div class="card p-6">
-                        <h3 class="font-bold text-surface-900 mb-4">امکانات</h3>
+                        <h3 class="font-bold text-surface-900 mb-4 text-sm">مشخصات کامل</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            @if($property->area_useful)
+                                <div class="p-3 rounded-xl bg-surface-50 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
+                                    <div class="text-[11px] text-surface-500 mb-0.5">متراژ مفید</div>
+                                    <div class="font-bold text-surface-900 text-sm">{{ number_format($property->area_useful) }} متر مربع</div>
+                                </div>
+                            @endif
+                            @if($property->year_built)
+                                <div class="p-3 rounded-xl bg-surface-50 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
+                                    <div class="text-[11px] text-surface-500 mb-0.5">سال ساخت</div>
+                                    <div class="font-bold text-surface-900 text-sm">{{ $property->year_built }}</div>
+                                </div>
+                            @endif
+                            @if($property->parking_count)
+                                <div class="p-3 rounded-xl bg-surface-50 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
+                                    <div class="text-[11px] text-surface-500 mb-0.5">پارکینگ</div>
+                                    <div class="font-bold text-surface-900 text-sm">{{ $property->parking_count }} عدد</div>
+                                </div>
+                            @endif
+                            @if($property->orientation)
+                                <div class="p-3 rounded-xl bg-surface-50 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
+                                    <div class="text-[11px] text-surface-500 mb-0.5">جهت ملک</div>
+                                    <div class="font-bold text-surface-900 text-sm">{{ $property->orientation }}</div>
+                                </div>
+                            @endif
+                            @if($property->land_area)
+                                <div class="p-3 rounded-xl bg-surface-50 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
+                                    <div class="text-[11px] text-surface-500 mb-0.5">مساحت زمین</div>
+                                    <div class="font-bold text-surface-900 text-sm">{{ number_format($property->land_area) }} متر مربع</div>
+                                </div>
+                            @endif
+                            @if($property->total_floors)
+                                <div class="p-3 rounded-xl bg-surface-50 hover:bg-brand-50 transition-colors duration-200 border border-transparent hover:border-brand-100/60">
+                                    <div class="text-[11px] text-surface-500 mb-0.5">کل طبقات</div>
+                                    <div class="font-bold text-surface-900 text-sm">{{ $property->total_floors }} طبقه</div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Amenities --}}
+                    <div class="card p-6">
+                        <h3 class="font-bold text-surface-900 mb-4 text-sm">امکانات</h3>
                         <div class="flex flex-wrap gap-2">
                             @if($property->has_parking)
-                                <span class="badge-success">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-medium border border-emerald-100">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                     پارکینگ
                                 </span>
                             @endif
                             @if($property->has_elevator)
-                                <span class="badge-success">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-medium border border-emerald-100">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                     آسانسور
                                 </span>
                             @endif
                             @if($property->has_storage)
-                                <span class="badge-success">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-medium border border-emerald-100">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                     انباری
                                 </span>
                             @endif
                             @if($property->has_balcony)
-                                <span class="badge-success">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-medium border border-emerald-100">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                     بالکن
                                 </span>
                             @endif
                             @if($property->has_garden)
-                                <span class="badge-success">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-medium border border-emerald-100">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                     فضای سبز
                                 </span>
                             @endif
@@ -183,72 +247,187 @@
                             @endunless
                         </div>
                     </div>
+
+                    {{-- Features --}}
+                    @if($property->features->count())
+                        <div class="card p-6">
+                            <h3 class="font-bold text-surface-900 mb-4 text-sm">ویژگی‌ها</h3>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach($property->features as $feature)
+                                    <span class="px-3 py-1.5 bg-surface-50 text-surface-700 rounded-lg text-xs font-medium border border-surface-200/60">
+                                        {{ $feature->name_fa }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
-                <!-- Sidebar -->
-                <div class="space-y-6">
-                    <!-- Location -->
+                {{-- Sidebar --}}
+                <div class="space-y-5">
+                    {{-- Location --}}
                     @if($property->location)
-                        <div class="card p-6">
-                            <h3 class="font-bold text-surface-900 mb-3">موقعیت</h3>
+                        <div class="card p-5">
+                            <h3 class="font-bold text-surface-900 mb-3 text-sm">موقعیت</h3>
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 bg-brand-100 rounded-xl flex items-center justify-center shrink-0">
                                     <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                 </div>
-                                <div class="font-bold text-surface-900">{{ $property->location->name }}</div>
+                                <div class="font-bold text-surface-900 text-sm">{{ $property->location->name }}</div>
                             </div>
                         </div>
                     @endif
 
-                    <!-- Address -->
+                    {{-- Address --}}
                     @if($property->address_fa)
-                        <div class="card p-6">
-                            <h3 class="font-bold text-surface-900 mb-3">آدرس</h3>
-                            <p class="text-surface-600 leading-relaxed">{{ $property->address_fa }}</p>
+                        <div class="card p-5">
+                            <h3 class="font-bold text-surface-900 mb-3 text-sm">آدرس</h3>
+                            <p class="text-surface-600 leading-relaxed text-sm">{{ $property->address_fa }}</p>
                         </div>
                     @endif
 
-                    <!-- Owner Info -->
+                    {{-- Owner Info (admin only) --}}
                     @admin
                         @if($property->owner)
-                            <div class="card p-6">
-                                <h3 class="font-bold text-surface-900 mb-3">مالک</h3>
+                            <div class="card p-5">
+                                <h3 class="font-bold text-surface-900 mb-3 text-sm">مالک</h3>
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl flex items-center justify-center shrink-0">
                                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                     </div>
                                     <div>
-                                        <div class="font-bold text-surface-900">{{ $property->owner->name }}</div>
-                                        <div class="text-sm text-surface-500">{{ $property->owner->email }}</div>
+                                        <div class="font-bold text-surface-900 text-sm">{{ $property->owner->name }}</div>
+                                        <div class="text-xs text-surface-500">{{ $property->owner->email }}</div>
                                     </div>
                                 </div>
                             </div>
                         @endif
                     @endadmin
 
-                    <!-- Quick Actions -->
-                    @admin
-                        <div class="card p-6">
-                            <h3 class="font-bold text-surface-900 mb-3">عملیات</h3>
-                            <div class="space-y-3">
-                                <a href="{{ route('properties.edit', $property) }}" class="btn-primary w-full text-sm">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                    ویرایش ملک
-                                </a>
-                                <form method="POST" action="{{ route('properties.destroy', $property) }}"
-                                      onsubmit="return confirm('آیا از حذف این ملک اطمینان دارید؟')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-danger w-full text-sm">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                        حذف ملک
-                                    </button>
-                                </form>
+                    {{-- Inquiry Form --}}
+                    <div class="card p-5" x-data="{ showForm: false }">
+                        <button @click="showForm = !showForm" class="w-full flex items-center justify-between mb-0">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 bg-brand-100 rounded-lg flex items-center justify-center shrink-0">
+                                    <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                </div>
+                                <h3 class="font-bold text-surface-900 text-sm">درخواست بازدید</h3>
                             </div>
+                            <svg class="w-4 h-4 text-surface-400 transition-transform duration-200" :class="showForm ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+
+                        <div x-show="showForm" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="mt-4">
+                            <form method="POST" action="{{ route('properties.inquiries.store', $property) }}" class="space-y-3">
+                                @csrf
+
+                                <div style="position: absolute; left: -9999px; opacity: 0;" tabindex="-1" aria-hidden="true">
+                                    <label for="_hp">لطفاً خالی بگذارید</label>
+                                    <input type="text" name="_hp" id="_hp" tabindex="-1" autocomplete="off">
+                                </div>
+
+                                @guest
+                                    <div>
+                                        <label for="customer_name" class="block mb-1 text-xs font-semibold text-surface-700">نام و نام خانوادگی</label>
+                                        <input type="text" name="customer_name" id="customer_name"
+                                               class="form-input py-2.5 text-xs" placeholder="نام خود را وارد کنید"
+                                               value="{{ old('customer_name') }}" required>
+                                        @error('customer_name')
+                                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <div>
+                                        <label for="customer_email" class="block mb-1 text-xs font-semibold text-surface-700">ایمیل (اختیاری)</label>
+                                        <input type="email" name="customer_email" id="customer_email"
+                                               class="form-input py-2.5 text-xs" placeholder="example@email.com"
+                                               value="{{ old('customer_email') }}">
+                                        @error('customer_email')
+                                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                @endguest
+
+                                @auth
+                                    <input type="hidden" name="customer_name" value="{{ Auth::user()->name }}">
+                                    <input type="hidden" name="customer_email" value="{{ Auth::user()->email }}">
+                                @endauth
+
+                                <div>
+                                    <label for="customer_phone" class="block mb-1 text-xs font-semibold text-surface-700">شماره تماس</label>
+                                    <input type="text" name="customer_phone" id="customer_phone"
+                                           class="form-input py-2.5 text-xs" placeholder="۰۹۱۲۱۲۳۴۵۶۷"
+                                           value="{{ old('customer_phone') }}" required>
+                                    @error('customer_phone')
+                                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="inquiry_type" class="block mb-1 text-xs font-semibold text-surface-700">نوع درخواست</label>
+                                    <select name="inquiry_type" id="inquiry_type" class="form-select py-2.5 text-xs">
+                                        <option value="visit_request" @selected(old('inquiry_type') === 'visit_request')>درخواست بازدید</option>
+                                        <option value="price_inquiry" @selected(old('inquiry_type') === 'price_inquiry')>استعلام قیمت</option>
+                                        <option value="general" @selected(old('inquiry_type') === 'general')>سوال عمومی</option>
+                                    </select>
+                                    @error('inquiry_type')
+                                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label for="preferred_date" class="block mb-1 text-xs font-semibold text-surface-700">تاریخ</label>
+                                        <input type="date" name="preferred_date" id="preferred_date"
+                                               class="form-input py-2.5 text-xs" value="{{ old('preferred_date') }}" required>
+                                        @error('preferred_date')
+                                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    <div>
+                                        <label for="preferred_time" class="block mb-1 text-xs font-semibold text-surface-700">ساعت</label>
+                                        <input type="time" name="preferred_time" id="preferred_time"
+                                               class="form-input py-2.5 text-xs" value="{{ old('preferred_time') }}" required>
+                                        @error('preferred_time')
+                                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="message" class="block mb-1 text-xs font-semibold text-surface-700">پیام (اختیاری)</label>
+                                    <textarea name="message" id="message" rows="3"
+                                              class="form-textarea py-2.5 text-xs" placeholder="توضیحات اضافی...">{{ old('message') }}</textarea>
+                                </div>
+
+                                <button type="submit" class="btn-primary w-full py-2.5 text-xs">
+                                    ثبت درخواست
+                                </button>
+                            </form>
                         </div>
-                    @endadmin
+                    </div>
                 </div>
             </div>
+
+            {{-- Similar Properties --}}
+            @if($similarProperties->count())
+                <div class="mt-12">
+                    <div class="flex justify-between items-end mb-6">
+                        <div>
+                            <h2 class="text-xl font-extrabold text-surface-900">املاک مشابه</h2>
+                            <p class="text-surface-500 text-sm mt-1">ملک‌هایی با ویژگی‌های مشابه</p>
+                        </div>
+                        <a href="{{ route('properties.index') }}" class="text-sm text-brand-600 hover:text-brand-700 font-semibold flex items-center gap-1">
+                            مشاهده همه
+                            <svg class="w-3.5 h-3.5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        @foreach($similarProperties as $similar)
+                            <x-property-card :property="$similar"/>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

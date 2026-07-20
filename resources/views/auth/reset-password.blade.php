@@ -4,33 +4,31 @@
         <p class="text-sm text-surface-500 mt-2">رمز عبور جدید خود را تعیین کنید</p>
     </div>
 
-    <form method="POST" action="{{ route('password.store') }}">
+    <form method="POST" action="{{ route('password.store') }}" class="space-y-5">
         @csrf
 
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
         <div>
             <x-input-label for="email" :value="'ایمیل'" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
+            <x-text-input id="email" class="block mt-1.5 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" placeholder="example@email.com" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <div class="mt-4">
+        <div>
             <x-input-label for="password" :value="'رمز عبور جدید'" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
+            <x-text-input id="password" class="block mt-1.5 w-full" type="password" name="password" required autocomplete="new-password" placeholder="حداقل ۸ کاراکتر" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <div class="mt-4">
+        <div>
             <x-input-label for="password_confirmation" :value="'تکرار رمز عبور جدید'" />
-            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
+            <x-text-input id="password_confirmation" class="block mt-1.5 w-full" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="رمز عبور را دوباره وارد کنید" />
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-6">
-            <x-primary-button>
-                بازنشانی رمز عبور
-            </x-primary-button>
-        </div>
+        <button type="submit" class="btn-primary w-full">
+            بازنشانی رمز عبور
+        </button>
     </form>
 </x-guest-layout>

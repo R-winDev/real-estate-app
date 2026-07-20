@@ -1,18 +1,28 @@
 <?php
 
+use App\Http\Controllers\Admin\InquiryController;
+use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Admin\LookupController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\PropertyInquiryController;
 use App\Models\Location;
 use App\Models\Property;
+use App\Models\PropertyInquiry;
 use App\Models\PropertyType;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $featuredProperties = Property::with(['location', 'type', 'status'])
+    $featuredProperties = Property::with(['location', 'type', 'status', 'images'])
         ->latest()
         ->take(6)
         ->get();
+
+    $propertyTypes = PropertyType::all();
+    $locations = Location::whereNull('parent_id')->get();
 
     $stats = [
         'total_properties' => Property::count(),
@@ -21,15 +31,20 @@ Route::get('/', function () {
         'total_users' => User::count(),
     ];
 
-    return view('welcome', compact('featuredProperties', 'stats'));
+    return view('welcome', compact('featuredProperties', 'stats', 'propertyTypes', 'locations'));
 })->name('home');
 
 Route::get('/dashboard', function () {
     $stats = [
         'total' => Property::count(),
-        'active' => Property::where('is_sold', false)->count(),
+        'active' => Property::where('is_sold', false)->where('status_id', 1)->count(),
         'sold' => Property::where('is_sold', true)->count(),
-        'inactive' => Property::where('status_id', '!=', 1)->count(),
+        'inactive' => Property::where('status_id', '!=', 1)->where('is_sold', false)->count(),
+        'locations' => Location::count(),
+        'types' => PropertyType::count(),
+        'users' => User::count(),
+        'inquiries' => PropertyInquiry::count(),
+        'pending_inquiries' => PropertyInquiry::where('status', 'pending')->count(),
     ];
 
     $recentProperties = Property::with(['location', 'type', 'status'])
@@ -37,17 +52,57 @@ Route::get('/dashboard', function () {
         ->take(5)
         ->get();
 
-    return view('dashboard', compact('stats', 'recentProperties'));
-})->middleware(['auth', 'verified', 'admin'])->name('dashboard');
+    $recentInquiries = PropertyInquiry::with(['property'])
+        ->latest()
+        ->take(5)
+        ->get();
 
-Route::middleware('auth')->group(function () {
+    $latestProperties = Property::with(['location', 'type', 'status'])
+        ->latest()
+        ->take(3)
+        ->get();
+
+    return view('dashboard', compact('stats', 'recentProperties', 'recentInquiries', 'latestProperties'));
+})->middleware(['auth', 'admin', 'force.password.change'])->name('dashboard');
+
+Route::middleware(['auth', 'admin', 'force.password.change'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('dashboard');
+    })->name('dashboard');
+
+    Route::get('lookup/{type}', [LookupController::class, 'index'])->name('lookup.index');
+    Route::get('lookup/{type}/create', [LookupController::class, 'create'])->name('lookup.create');
+    Route::post('lookup/{type}', [LookupController::class, 'store'])->name('lookup.store');
+    Route::get('lookup/{type}/{id}/edit', [LookupController::class, 'edit'])->name('lookup.edit');
+    Route::put('lookup/{type}/{id}', [LookupController::class, 'update'])->name('lookup.update');
+    Route::delete('lookup/{type}/{id}', [LookupController::class, 'destroy'])->name('lookup.destroy');
+
+    Route::resource('locations', LocationController::class)->except(['show']);
+    Route::resource('users', UserController::class)->except(['show']);
+
+    Route::get('inquiries', [InquiryController::class, 'index'])->name('inquiries.index');
+    Route::get('inquiries/{inquiry}', [InquiryController::class, 'show'])->name('inquiries.show');
+    Route::patch('inquiries/{inquiry}/status', [InquiryController::class, 'updateStatus'])->name('inquiries.update-status');
+    Route::delete('inquiries/{inquiry}', [InquiryController::class, 'destroy'])->name('inquiries.destroy');
+});
+
+Route::middleware(['auth', 'force.password.change'])->group(function () {
+    Route::get('/force-password-change', [ForcePasswordChangeController::class, 'show'])->name('password.force.show');
+    Route::put('/force-password-change', [ForcePasswordChangeController::class, 'update'])->name('password.force.update');
+});
+
+Route::middleware(['auth', 'force.password.change'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('properties', PropertyController::class)->except(['index', 'show'])->middleware(['auth', 'admin']);
+Route::resource('properties', PropertyController::class)->except(['index', 'show'])->middleware(['auth', 'admin', 'force.password.change']);
 
 Route::resource('properties', PropertyController::class)->only(['index', 'show']);
+
+Route::post('/properties/{property}/inquiries', [PropertyInquiryController::class, 'store'])
+    ->middleware('throttle:inquiry')
+    ->name('properties.inquiries.store');
 
 require __DIR__.'/auth.php';

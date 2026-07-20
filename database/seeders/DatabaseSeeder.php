@@ -12,10 +12,8 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'مدیر سیستم',
-            'email' => 'admin@example.com',
-            'is_admin' => true,
+        $this->call([
+            AdminUserSeeder::class,
         ]);
 
         User::factory(10)->create();

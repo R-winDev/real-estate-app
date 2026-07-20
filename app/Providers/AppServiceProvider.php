@@ -20,6 +20,8 @@ class AppServiceProvider extends ServiceProvider
             return auth()->check() && auth()->user()->isAdmin();
         });
 
+        Blade::anonymousComponentPath(resource_path('views/admin/layouts'), 'admin');
+
         RedirectIfAuthenticated::redirectUsing(function () {
             if (Route::has('dashboard') && auth()->check() && auth()->user()->isAdmin()) {
                 return route('dashboard');

@@ -10,22 +10,22 @@
 
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('password.email') }}">
+    <form method="POST" action="{{ route('password.email') }}" class="space-y-5">
         @csrf
 
         <div>
             <x-input-label for="email" :value="'ایمیل'" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus placeholder="example@email.com" />
+            <x-text-input id="email" class="block mt-1.5 w-full" type="email" name="email" :value="old('email')" required autofocus placeholder="example@email.com" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-between mt-6">
-            <a class="text-sm text-brand-600 hover:text-brand-700 underline" href="{{ route('login') }}">
+        <div class="flex items-center justify-between">
+            <a class="text-sm text-brand-600 hover:text-brand-700 font-medium" href="{{ route('login') }}">
                 بازگشت به ورود
             </a>
-            <x-primary-button>
+            <button type="submit" class="btn-primary">
                 ارسال لینک بازیابی
-            </x-primary-button>
+            </button>
         </div>
     </form>
 </x-guest-layout>
