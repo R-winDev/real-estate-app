@@ -1,7 +1,7 @@
 <section>
     <header>
-        <h2 class="text-lg font-bold text-surface-900">بروزرسانی رمز عبور</h2>
-        <p class="mt-1 text-sm text-surface-500">مطمئن شوید حساب شما از رمز عبور طولانی و تصادفی استفاده می‌کند تا ایمن بماند.</p>
+        <h2 class="text-lg font-bold text-neutral-900">بروزرسانی رمز عبور</h2>
+        <p class="mt-1 text-sm text-neutral-500">مطمئن شوید حساب شما از رمز عبور طولانی و تصادفی استفاده می‌کند تا ایمن بماند.</p>
     </header>
 
     <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">

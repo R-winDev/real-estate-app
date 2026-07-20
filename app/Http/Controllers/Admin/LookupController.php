@@ -57,7 +57,23 @@ class LookupController extends Controller
     public function index(string $type)
     {
         $config = $this->getConfig($type);
-        $items = $config['model']::latest()->paginate(15);
+        $query = $config['model']::latest();
+
+        if (request()->filled('search')) {
+            $search = request('search');
+            $query->where(function ($q) use ($search, $config) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('name_fa', 'like', "%{$search}%");
+                if (in_array('slug', $config['fields'])) {
+                    $q->orWhere('slug', 'like', "%{$search}%");
+                }
+                if (in_array('category', $config['fields'])) {
+                    $q->orWhere('category', 'like', "%{$search}%");
+                }
+            });
+        }
+
+        $items = $query->paginate(15)->withQueryString();
 
         return view('admin.lookup.index', compact('items', 'type', 'config'));
     }

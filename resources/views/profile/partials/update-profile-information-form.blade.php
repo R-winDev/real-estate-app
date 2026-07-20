@@ -1,7 +1,7 @@
 <section>
     <header>
-        <h2 class="text-lg font-bold text-surface-900">اطلاعات پروفایل</h2>
-        <p class="mt-1 text-sm text-surface-500">اطلاعات حساب کاربری و آدرس ایمیل خود را بروزرسانی کنید.</p>
+        <h2 class="text-lg font-bold text-neutral-900">اطلاعات پروفایل</h2>
+        <p class="mt-1 text-sm text-neutral-500">اطلاعات حساب کاربری و آدرس ایمیل خود را بروزرسانی کنید.</p>
     </header>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
@@ -25,9 +25,9 @@
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
-                    <p class="text-sm mt-2 text-surface-800">
+                    <p class="text-sm mt-2 text-neutral-800">
                         آدرس ایمیل شما تایید نشده است.
-                        <button form="send-verification" class="underline text-sm text-brand-600 hover:text-brand-700">
+                        <button form="send-verification" class="underline text-sm text-primary-600 hover:text-primary-700">
                             برای ارسال مجدد ایمیل تایید اینجا کلیک کنید.
                         </button>
                     </p>

@@ -5,8 +5,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
         </div>
-        <h2 class="text-2xl font-bold text-surface-900">تغییر اجباری رمز عبور</h2>
-        <p class="mt-2 text-sm text-surface-500">برای ادامه، لطفاً رمز عبور خود را تغییر دهید</p>
+        <h2 class="text-2xl font-bold text-neutral-900">تغییر اجباری رمز عبور</h2>
+        <p class="mt-2 text-sm text-neutral-500">برای ادامه، لطفاً رمز عبور خود را تغییر دهید</p>
     </div>
 
     <x-alert type="warning" class="mb-6">برای امنیت حساب کاربری، باید رمز عبور پیش‌فرض را تغییر دهید.</x-alert>

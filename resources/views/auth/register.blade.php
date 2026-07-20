@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-8 text-center">
-        <h2 class="text-2xl font-bold text-surface-900">ثبت نام</h2>
-        <p class="text-sm text-surface-500 mt-2">حساب کاربری جدید ایجاد کنید</p>
+        <h2 class="text-2xl font-bold text-neutral-900">ثبت نام</h2>
+        <p class="text-sm text-neutral-500 mt-2">حساب کاربری جدید ایجاد کنید</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}" class="space-y-5">
@@ -37,9 +37,9 @@
     </form>
 
     <div class="mt-6 text-center">
-        <p class="text-sm text-surface-500">
+        <p class="text-sm text-neutral-500">
             قبلاً ثبت نام کرده‌اید؟
-            <a href="{{ route('login') }}" class="text-brand-600 hover:text-brand-700 font-semibold">ورود کنید</a>
+            <a href="{{ route('login') }}" class="text-primary-600 hover:text-primary-700 font-semibold">ورود کنید</a>
         </p>
     </div>
 </x-guest-layout>

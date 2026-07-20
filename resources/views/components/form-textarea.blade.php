@@ -1,7 +1,7 @@
 @props(['name', 'label', 'value' => ''])
 
 <div class="mb-5">
-    <label for="{{ $name }}" class="block mb-2 text-sm font-semibold text-surface-700">{{ $label }}</label>
+    <label for="{{ $name }}" class="block mb-2 text-sm font-semibold text-neutral-700">{{ $label }}</label>
     <textarea id="{{ $name }}" name="{{ $name }}" rows="4"
               class="form-textarea"
               placeholder="{{ $label }}">{{ old($name, $value) }}</textarea>

@@ -1,49 +1,53 @@
 <x-admin-layout title="ویرایش موقعیت">
     <div class="max-w-xl">
-        <div class="bg-white rounded-2xl shadow-soft border border-surface-100 p-6">
-            <form method="POST" action="{{ route('admin.locations.update', $location->id) }}" class="space-y-5">
+        {{-- Page Header --}}
+        <div class="mb-6">
+            <h2 class="text-xl font-bold text-neutral-800">ویرایش موقعیت</h2>
+            <p class="text-sm text-neutral-500 mt-1">{{ $location->name }}</p>
+        </div>
+
+        {{-- Form Card --}}
+        <div class="rounded-xl border border-neutral-200 bg-white overflow-hidden">
+            <form method="POST" action="{{ route('admin.locations.update', $location->id) }}">
                 @csrf
                 @method('PUT')
 
-                <div>
-                    <label for="name" class="block text-sm font-medium text-surface-700 mb-1">نام</label>
-                    <input type="text" name="name" id="name" value="{{ old('name', $location->name) }}" class="form-input" required>
-                    @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                {{-- Section: Location Info --}}
+                <div class="px-6 py-4 border-b border-neutral-100">
+                    <h3 class="text-sm font-semibold text-neutral-700 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        اطلاعات موقعیت
+                    </h3>
+                </div>
+                <div class="p-6 space-y-5">
+                    <x-form-input name="name" :value="old('name', $location->name)" label="نام" required />
+
+                    <x-form-input name="slug" :value="old('slug', $location->slug)" label="پیوند یکتا" dir="ltr" />
+
+                    <x-form-select name="parent_id" label="والد" :options="$parentLocations->pluck('name', 'id')->prepend('بدون والد', '')" :selected="old('parent_id', $location->parent_id)" />
                 </div>
 
-                <div>
-                    <label for="slug" class="block text-sm font-medium text-surface-700 mb-1">پیوند یکتا</label>
-                    <input type="text" name="slug" id="slug" value="{{ old('slug', $location->slug) }}" class="form-input" dir="ltr">
-                    @error('slug') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                {{-- Section: Coordinates --}}
+                <div class="px-6 py-4 border-t border-neutral-100 border-b border-neutral-100">
+                    <h3 class="text-sm font-semibold text-neutral-700 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                        مختصات جغرافیایی
+                    </h3>
                 </div>
-
-                <div>
-                    <label for="parent_id" class="block text-sm font-medium text-surface-700 mb-1">والد</label>
-                    <select name="parent_id" id="parent_id" class="form-select">
-                        <option value="">بدون والد</option>
-                        @foreach($parentLocations as $loc)
-                            <option value="{{ $loc->id }}" {{ old('parent_id', $location->parent_id) == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
-                        @endforeach
-                    </select>
-                    @error('parent_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label for="latitude" class="block text-sm font-medium text-surface-700 mb-1">عرض جغرافیایی</label>
-                        <input type="number" step="any" name="latitude" id="latitude" value="{{ old('latitude', $location->latitude) }}" class="form-input" dir="ltr">
-                        @error('latitude') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label for="longitude" class="block text-sm font-medium text-surface-700 mb-1">طول جغرافیایی</label>
-                        <input type="number" step="any" name="longitude" id="longitude" value="{{ old('longitude', $location->longitude) }}" class="form-input" dir="ltr">
-                        @error('longitude') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                <div class="p-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <x-form-input name="latitude" :value="old('latitude', $location->latitude)" label="عرض جغرافیایی" type="number" step="any" dir="ltr" />
+                        <x-form-input name="longitude" :value="old('longitude', $location->longitude)" label="طول جغرافیایی" type="number" step="any" dir="ltr" />
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3 pt-2">
-                    <button type="submit" class="btn-primary">بروزرسانی</button>
-                    <a href="{{ route('admin.locations.index') }}" class="btn-ghost">انصراف</a>
+                {{-- Actions --}}
+                <div class="px-6 py-4 border-t border-neutral-100 bg-neutral-50/50 flex items-center gap-3">
+                    <button type="submit" class="btn-primary">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        بروزرسانی
+                    </button>
+                    <a href="{{ route('admin.locations.index') }}" class="btn-secondary">انصراف</a>
                 </div>
             </form>
         </div>

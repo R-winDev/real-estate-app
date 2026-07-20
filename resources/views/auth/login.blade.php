@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-8 text-center">
-        <h2 class="text-2xl font-bold text-surface-900">ورود به حساب کاربری</h2>
-        <p class="text-sm text-surface-500 mt-2">خوش آمدید! لطفاً وارد حساب خود شوید.</p>
+        <h2 class="text-2xl font-bold text-neutral-900">ورود به حساب کاربری</h2>
+        <p class="text-sm text-neutral-500 mt-2">خوش آمدید! لطفاً وارد حساب خود شوید.</p>
     </div>
 
     <x-auth-session-status class="mb-4" :status="session('status')" />
@@ -24,11 +24,11 @@
         <div class="flex items-center justify-between">
             <label for="remember_me" class="inline-flex items-center cursor-pointer">
                 <input id="remember_me" type="checkbox" class="form-checkbox" name="remember">
-                <span class="mr-2 text-sm text-surface-600">مرا به خاطر بسپار</span>
+                <span class="mr-2 text-sm text-neutral-600">مرا به خاطر بسپار</span>
             </label>
 
             @if (Route::has('password.request'))
-                <a class="text-sm text-brand-600 hover:text-brand-700 font-medium" href="{{ route('password.request') }}">
+                <a class="text-sm text-primary-600 hover:text-primary-700 font-medium" href="{{ route('password.request') }}">
                     رمز عبور را فراموش کرده‌اید؟
                 </a>
             @endif
@@ -40,9 +40,9 @@
     </form>
 
     <div class="mt-6 text-center">
-        <p class="text-sm text-surface-500">
+        <p class="text-sm text-neutral-500">
             حساب کاربری ندارید؟
-            <a href="{{ route('register') }}" class="text-brand-600 hover:text-brand-700 font-semibold">ثبت نام کنید</a>
+            <a href="{{ route('register') }}" class="text-primary-600 hover:text-primary-700 font-semibold">ثبت نام کنید</a>
         </p>
     </div>
 </x-guest-layout>

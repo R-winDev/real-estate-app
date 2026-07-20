@@ -1,7 +1,7 @@
 <section class="space-y-6">
     <header>
-        <h2 class="text-lg font-bold text-surface-900">حذف حساب کاربری</h2>
-        <p class="mt-1 text-sm text-surface-500">پس از حذف حساب، تمامی منابع و داده‌های آن به طور دائمی حذف خواهند شد. قبل از حذف حساب، هرگونه داده یا اطلاعاتی که می‌خواهید نگه دارید را دانلود کنید.</p>
+        <h2 class="text-lg font-bold text-neutral-900">حذف حساب کاربری</h2>
+        <p class="mt-1 text-sm text-neutral-500">پس از حذف حساب، تمامی منابع و داده‌های آن به طور دائمی حذف خواهند شد. قبل از حذف حساب، هرگونه داده یا اطلاعاتی که می‌خواهید نگه دارید را دانلود کنید.</p>
     </header>
 
     <button
@@ -18,9 +18,9 @@
             @csrf
             @method('delete')
 
-            <h2 class="text-lg font-bold text-surface-900">آیا از حذف حساب کاربری خود اطمینان دارید؟</h2>
+            <h2 class="text-lg font-bold text-neutral-900">آیا از حذف حساب کاربری خود اطمینان دارید؟</h2>
 
-            <p class="mt-1 text-sm text-surface-500 leading-relaxed">
+            <p class="mt-1 text-sm text-neutral-500 leading-relaxed">
                 پس از حذف حساب، تمامی منابع و داده‌های آن به طور دائمی حذف خواهند شد. لطفاً رمز عبور خود را وارد کنید تا تایید کنید که می‌خواهید حساب خود را به طور دائمی حذف کنید.
             </p>
 

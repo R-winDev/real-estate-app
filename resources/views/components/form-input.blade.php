@@ -1,10 +1,9 @@
-@props(['name', 'label', 'type' => 'text', 'value' => ''])
+@props(['name', 'label', 'type' => 'text', 'value' => '', 'optional' => false])
 
-<div class="mb-5">
-    <label for="{{ $name }}" class="block mb-2 text-sm font-semibold text-surface-700">{{ $label }}</label>
+<div>
+    <label for="{{ $name }}" class="block mb-2 text-sm font-semibold text-neutral-700">{{ $label }}@if($optional) <span class="text-neutral-400 font-normal">(اختیاری)</span>@endif</label>
     <input type="{{ $type }}" name="{{ $name }}" id="{{ $name }}"
            class="form-input"
-           placeholder="{{ $label }}"
            value="{{ old($name, $value) }}"
            {{ $attributes }}>
     @error($name)
@@ -13,4 +12,7 @@
             {{ $message }}
         </p>
     @enderror
+    @if(isset($helper))
+        <p class="text-xs text-neutral-400 mt-1">{{ $helper }}</p>
+    @endif
 </div>

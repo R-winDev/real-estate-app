@@ -1,9 +1,8 @@
 @props(['name', 'label', 'options', 'selected' => null])
 
-<div class="mb-5">
-    <label for="{{ $name }}" class="block mb-2 text-sm font-semibold text-surface-700">{{ $label }}</label>
+<div>
+    <label for="{{ $name }}" class="block mb-2 text-sm font-semibold text-neutral-700">{{ $label }}</label>
     <select id="{{ $name }}" name="{{ $name }}" class="form-select">
-        <option value="">انتخاب کنید...</option>
         @foreach($options as $key => $value)
             <option value="{{ $key }}" @selected(old($name, $selected) == $key)>{{ $value }}</option>
         @endforeach

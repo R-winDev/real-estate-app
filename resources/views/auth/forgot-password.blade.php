@@ -1,10 +1,10 @@
 <x-guest-layout>
     <div class="mb-8 text-center">
-        <h2 class="text-2xl font-bold text-surface-900">بازیابی رمز عبور</h2>
-        <p class="text-sm text-surface-500 mt-2">رمز عبور خود را بازیابی کنید</p>
+        <h2 class="text-2xl font-bold text-neutral-900">بازیابی رمز عبور</h2>
+        <p class="text-sm text-neutral-500 mt-2">رمز عبور خود را بازیابی کنید</p>
     </div>
 
-    <div class="mb-4 text-sm text-surface-600 leading-relaxed">
+    <div class="mb-4 text-sm text-neutral-600 leading-relaxed">
         رمز عبور خود را فراموش کرده‌اید؟ نگران نباشید. ایمیل خود را وارد کنید تا لینک بازیابی رمز عبور برایتان ارسال شود.
     </div>
 
@@ -20,7 +20,7 @@
         </div>
 
         <div class="flex items-center justify-between">
-            <a class="text-sm text-brand-600 hover:text-brand-700 font-medium" href="{{ route('login') }}">
+            <a class="text-sm text-primary-600 hover:text-primary-700 font-medium" href="{{ route('login') }}">
                 بازگشت به ورود
             </a>
             <button type="submit" class="btn-primary">

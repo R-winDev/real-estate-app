@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-8 text-center">
-        <h2 class="text-2xl font-bold text-surface-900">تایید هویت</h2>
-        <p class="text-sm text-surface-500 mt-2">لطفاً برای ادامه، رمز عبور خود را تایید کنید.</p>
+        <h2 class="text-2xl font-bold text-neutral-900">تایید هویت</h2>
+        <p class="text-sm text-neutral-500 mt-2">لطفاً برای ادامه، رمز عبور خود را تایید کنید.</p>
     </div>
 
     <form method="POST" action="{{ route('password.confirm') }}" class="space-y-5">
