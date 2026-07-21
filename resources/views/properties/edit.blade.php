@@ -78,7 +78,7 @@
                 </div>
                 <div class="p-6">
                     <x-form-select name="orientation" label="جهت ملک"
-                        :options="['شمالی' => 'شمالی', 'جنوبی' => 'جنوبی', 'شرقی' => 'شرقی', 'غربی' => 'غربی']"
+                        :options="['north' => 'شمالی', 'south' => 'جنوبی', 'east' => 'شرقی', 'west' => 'غربی']"
                         :selected="$property->orientation" />
                 </div>
             </div>
