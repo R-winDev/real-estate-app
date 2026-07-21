@@ -33,14 +33,14 @@
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>نام انگلیسی</th>
-                        <th>نام فارسی</th>
-                        <th>پیوند یکتا</th>
+                        <th class="text-center">#</th>
+                        <th class="text-center">نام انگلیسی</th>
+                        <th class="text-center">نام فارسی</th>
+                        <th class="text-center">پیوند یکتا</th>
                         @if(in_array('category', $config['fields']))
-                            <th>دسته‌بندی</th>
+                            <th class="text-center">دسته‌بندی</th>
                         @endif
-                        <th class="text-left">عملیات</th>
+                        <th class="text-center">عملیات</th>
                     </tr>
                 </thead>
                 <tbody>

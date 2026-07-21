@@ -124,6 +124,11 @@ class PropertyController extends Controller
 
     public function destroy(Property $property)
     {
+        $property->features()->detach();
+        $property->climateSystems()->detach();
+        $property->floorMaterials()->detach();
+        $property->buildingMaterials()->detach();
+        $property->documents()->detach();
         $property->delete();
 
         return redirect()->route('properties.index')->with('success', 'ملک با موفقیت حذف شد');

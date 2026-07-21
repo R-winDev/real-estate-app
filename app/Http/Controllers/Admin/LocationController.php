@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Location;
+use App\Models\Property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -71,6 +72,7 @@ class LocationController extends Controller
 
     public function destroy(Location $location)
     {
+        Property::where('location_id', $location->id)->update(['location_id' => null]);
         $location->delete();
 
         return redirect()->route('admin.locations.index')->with('success', 'موقعیت با موفقیت حذف شد');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -137,6 +138,13 @@ class LookupController extends Controller
     {
         $config = $this->getConfig($type);
         $item = $config['model']::findOrFail($id);
+
+        if ($type === 'property-types') {
+            Property::where('type_id', $item->id)->update(['type_id' => null]);
+        } elseif ($type === 'property-statuses') {
+            Property::where('status_id', $item->id)->update(['status_id' => null]);
+        }
+
         $item->delete();
 
         return redirect()->route('admin.lookup.index', $type)->with('success', "{$config['label']} با موفقیت حذف شد");

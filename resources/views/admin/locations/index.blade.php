@@ -17,13 +17,13 @@
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>نام</th>
-                        <th>پیوند یکتا</th>
-                        <th>والد</th>
-                        <th>طول جغرافیایی</th>
-                        <th>عرض جغرافیایی</th>
-                        <th class="text-left">عملیات</th>
+                        <th class="text-center">#</th>
+                        <th class="text-center">نام</th>
+                        <th class="text-center">پیوند یکتا</th>
+                        <th class="text-center">والد</th>
+                        <th class="text-center">طول جغرافیایی</th>
+                        <th class="text-center">عرض جغرافیایی</th>
+                        <th class="text-center">عملیات</th>
                     </tr>
                 </thead>
                 <tbody>

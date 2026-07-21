@@ -17,12 +17,12 @@
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>کاربر</th>
-                        <th>ایمیل</th>
-                        <th>تلفن</th>
-                        <th>نقش</th>
-                        <th class="text-left">عملیات</th>
+                        <th class="text-center">#</th>
+                        <th class="text-center">کاربر</th>
+                        <th class="text-center">ایمیل</th>
+                        <th class="text-center">تلفن</th>
+                        <th class="text-center">نقش</th>
+                        <th class="text-center">عملیات</th>
                     </tr>
                 </thead>
                 <tbody>

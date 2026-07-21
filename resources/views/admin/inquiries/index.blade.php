@@ -33,14 +33,14 @@
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>ملک</th>
-                        <th>نام مشتری</th>
-                        <th>تلفن</th>
-                        <th>نوع</th>
-                        <th>تاریخ</th>
-                        <th>وضعیت</th>
-                        <th class="text-left">عملیات</th>
+                        <th class="text-center">#</th>
+                        <th class="text-center">ملک</th>
+                        <th class="text-center">نام مشتری</th>
+                        <th class="text-center">تلفن</th>
+                        <th class="text-center">نوع</th>
+                        <th class="text-center">تاریخ</th>
+                        <th class="text-center">وضعیت</th>
+                        <th class="text-center">عملیات</th>
                     </tr>
                 </thead>
                 <tbody>

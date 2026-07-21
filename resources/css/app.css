@@ -200,7 +200,8 @@
         @apply border-b border-neutral-200;
     }
     .admin-table thead th {
-        @apply px-6 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider text-left;
+        @apply px-6 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider;
+        text-align: center;
     }
     .admin-table tbody tr {
         @apply border-b border-neutral-100 transition-colors duration-100;
@@ -214,6 +215,7 @@
     .admin-table tbody td,
     .admin-table tbody th {
         @apply px-6 py-4;
+        text-align: center;
     }
     .admin-table tbody th {
         @apply font-medium text-neutral-900 whitespace-nowrap;

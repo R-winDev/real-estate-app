@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Property;
+use App\Models\PropertyInquiry;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -77,6 +79,8 @@ class UserController extends Controller
             return back()->withErrors(['error' => 'امکان حذف حساب خودتان وجود ندارد']);
         }
 
+        Property::where('owner_id', $user->id)->update(['owner_id' => null]);
+        PropertyInquiry::where('customer_id', $user->id)->update(['customer_id' => null]);
         $user->delete();
 
         return redirect()->route('admin.users.index')->with('success', 'کاربر با موفقیت حذف شد');
