@@ -84,8 +84,17 @@
                         }
                     </script>
                 @else
+                    @php
+                        $typeSlug = match($property->type?->name_fa) {
+                            'آپارتمان' => 'apartment',
+                            'ویلا' => 'villa',
+                            'مغازه' => 'shop',
+                            'زمین' => 'land',
+                            default => 'apartment',
+                        };
+                    @endphp
                     <div class="rounded-2xl overflow-hidden bg-neutral-100 aspect-[16/9]">
-                        <img src="https://placehold.co/1200x675/e2e8f0/94a3b8?text={{ urlencode('تصویر ملک') }}" alt="{{ $property->title }}" class="w-full h-full object-cover">
+                        <img src="{{ asset("images/properties/{$typeSlug}/{$typeSlug}.png") }}" alt="{{ $property->title }}" class="w-full h-full object-cover">
                     </div>
                 @endif
             </div>
