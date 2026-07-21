@@ -11,9 +11,17 @@
             <img src="{{ $primaryImage->url }}" alt="{{ $property->title }}"
                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
         @else
-            <div class="w-full h-full bg-gradient-to-br from-primary-50 via-primary-100/50 to-neutral-100 flex items-center justify-center">
-                <svg class="w-14 h-14 text-primary-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-            </div>
+            @php
+                $typeSlug = match($property->type?->name_fa) {
+                    'آپارتمان' => 'apartment',
+                    'ویلا' => 'villa',
+                    'مغازه' => 'shop',
+                    'زمین' => 'land',
+                    default => 'apartment',
+                };
+            @endphp
+            <img src="{{ asset("images/properties/{$typeSlug}/{$typeSlug}.png") }}" alt="{{ $property->title }}"
+                 class="w-full h-full object-cover">
         @endif
 
         <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
