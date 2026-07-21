@@ -152,9 +152,9 @@
                     </form>
                 </aside>
 
-                <div class="flex-1 min-w-0">
+                <div class="flex-1 min-w-0" x-data="{ view: 'grid' }">
                     <div class="flex items-center justify-between mb-4 lg:mb-6">
-                        <div class="flex items-center gap-2" x-data="{ view: 'grid' }">
+                        <div class="flex items-center gap-2">
                             <button @click="view = 'grid'; $refs.gridView.classList.remove('hidden'); $refs.listView.classList.add('hidden')"
                                     :class="view === 'grid' ? 'bg-primary-50 text-primary-600 border-primary-200' : 'bg-white text-neutral-500 border-neutral-200'"
                                     class="p-2 rounded-lg border transition-all duration-200">
