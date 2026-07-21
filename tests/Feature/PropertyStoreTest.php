@@ -36,6 +36,7 @@ class PropertyStoreTest extends TestCase
                 'status_id' => $status->id,
                 'location_id' => $location->id,
                 'owner_id' => $user->id,
+                'listing_type' => 'sale',
             ]
         );
 
@@ -104,6 +105,7 @@ class PropertyStoreTest extends TestCase
                 'price' => 5000,
                 'is_sold' => true,
                 'id' => 9999,
+                'listing_type' => 'sale',
             ]
         );
 
@@ -128,6 +130,7 @@ class PropertyStoreTest extends TestCase
             [
                 'title' => 'Test Property',
                 'price' => 5000000000,
+                'listing_type' => 'sale',
             ]
         );
 

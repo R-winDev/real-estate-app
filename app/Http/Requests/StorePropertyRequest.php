@@ -24,6 +24,7 @@ class StorePropertyRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
+            'listing_type' => 'required|string|in:sale,rental',
             'description' => 'nullable|string|max:1024',
 
             'area_total' => 'nullable|numeric|min:0',
@@ -48,6 +49,8 @@ class StorePropertyRequest extends FormRequest
             'has_garden' => 'boolean',
 
             'price' => 'nullable|integer|min:0',
+            'deposit_amount' => 'nullable|integer|min:0',
+            'rent_amount' => 'nullable|integer|min:0',
             'is_sold' => 'boolean',
             'address_fa' => 'nullable|string|max:500',
 
@@ -63,9 +66,13 @@ class StorePropertyRequest extends FormRequest
         return [
             'title.required' => 'عنوان ملک الزامی است.',
             'title.max' => 'عنوان نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.',
+            'listing_type.required' => 'نوع آگهی الزامی است.',
+            'listing_type.in' => 'نوع آگهی معتبر نیست.',
             'area_total.numeric' => 'متراژ باید عدد باشد.',
             'area_useful.numeric' => 'متراژ مفید باید عدد باشد.',
             'price.integer' => 'قیمت باید عدد باشد.',
+            'deposit_amount.integer' => 'مبلغ رهن باید عدد باشد.',
+            'rent_amount.integer' => 'مبلغ اجاره باید عدد باشد.',
             'bedrooms.integer' => 'تعداد اتاق خواب باید عدد باشد.',
             'bathrooms.integer' => 'تعداد سرویس بهداشتی باید عدد باشد.',
             'status_id.exists' => 'وضعیت انتخاب شده معتبر نیست.',

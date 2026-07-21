@@ -135,6 +135,7 @@ class AdminAuthorizationTest extends TestCase
             'status_id' => $status->id,
             'location_id' => $location->id,
             'owner_id' => $this->admin->id,
+            'listing_type' => 'sale',
         ]);
 
         $response->assertRedirect();

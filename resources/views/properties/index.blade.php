@@ -20,7 +20,7 @@
         <div class="container-wide">
             <div class="flex flex-col lg:flex-row gap-6">
 
-                <aside class="lg:w-72 shrink-0" x-data="{ filtersOpen: false }">
+                <aside class="lg:w-72 shrink-0" x-data="filterForm()">
                     <button @click="filtersOpen = !filtersOpen" class="lg:hidden w-full btn-secondary mb-4">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                         فیلترها
@@ -41,6 +41,23 @@
                                 <input type="text" name="search" value="{{ request('search') }}"
                                        class="form-input pr-10 py-2.5 text-xs" placeholder="عنوان، آدرس...">
                             </div>
+                        </div>
+
+                        <div>
+                            <label class="block mb-1.5 text-xs font-semibold text-neutral-600">نوع آگهی</label>
+                            <div class="flex rounded-lg border border-neutral-200 overflow-hidden">
+                                <button type="button" @click="listingType = 'sale'"
+                                    :class="listingType === 'sale' ? 'bg-primary-500 text-white' : 'bg-white text-neutral-600 hover:bg-neutral-50'"
+                                    class="flex-1 py-2 text-xs font-semibold transition-all duration-200 border-0">
+                                    فروش
+                                </button>
+                                <button type="button" @click="listingType = 'rental'"
+                                    :class="listingType === 'rental' ? 'bg-primary-500 text-white' : 'bg-white text-neutral-600 hover:bg-neutral-50'"
+                                    class="flex-1 py-2 text-xs font-semibold transition-all duration-200 border-0">
+                                    اجاره
+                                </button>
+                            </div>
+                            <input type="hidden" name="listing_type" :value="listingType">
                         </div>
 
                         <div>
@@ -75,13 +92,36 @@
                         </div>
                         @endif
 
-                        <div>
+                        {{-- Sale Price Range --}}
+                        <div x-show="listingType === 'sale'" x-transition>
                             <label class="block mb-1.5 text-xs font-semibold text-neutral-600">محدوده قیمت</label>
                             <div class="grid grid-cols-2 gap-2">
                                 <input type="number" name="min_price" value="{{ request('min_price') }}"
                                        class="form-input py-2.5 text-xs" placeholder="از">
                                 <input type="number" name="max_price" value="{{ request('max_price') }}"
                                        class="form-input py-2.5 text-xs" placeholder="تا">
+                            </div>
+                        </div>
+
+                        {{-- Rental Price Ranges --}}
+                        <div x-show="listingType === 'rental'" x-transition class="space-y-4">
+                            <div>
+                                <label class="block mb-1.5 text-xs font-semibold text-neutral-600">محدوده رهن</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" name="min_deposit" value="{{ request('min_deposit') }}"
+                                           class="form-input py-2.5 text-xs" placeholder="از">
+                                    <input type="number" name="max_deposit" value="{{ request('max_deposit') }}"
+                                           class="form-input py-2.5 text-xs" placeholder="تا">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block mb-1.5 text-xs font-semibold text-neutral-600">محدوده اجاره</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" name="min_rent" value="{{ request('min_rent') }}"
+                                           class="form-input py-2.5 text-xs" placeholder="از">
+                                    <input type="number" name="max_rent" value="{{ request('max_rent') }}"
+                                           class="form-input py-2.5 text-xs" placeholder="تا">
+                                </div>
                             </div>
                         </div>
 
@@ -167,4 +207,13 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function filterForm() {
+            return {
+                filtersOpen: false,
+                listingType: '{{ request('listing_type', 'sale') }}'
+            }
+        }
+    </script>
 </x-app-layout>

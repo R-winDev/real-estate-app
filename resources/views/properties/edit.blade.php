@@ -1,5 +1,5 @@
 <x-admin-layout title="ویرایش ملک">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-4xl mx-auto" x-data="propertyForm()">
         {{-- Page Header --}}
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
@@ -27,6 +27,25 @@
                 <div class="p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                         <x-form-input name="title" label="عنوان ملک" :value="$property->title" />
+                        <div>
+                            <label class="block mb-1.5 text-xs font-semibold text-neutral-700">نوع آگهی</label>
+                            <div class="flex rounded-lg border border-neutral-200 overflow-hidden">
+                                <button type="button" @click="listingType = 'sale'"
+                                    :class="listingType === 'sale' ? 'bg-primary-500 text-white border-primary-500' : 'bg-white text-neutral-600 hover:bg-neutral-50'"
+                                    class="flex-1 py-2.5 text-sm font-semibold transition-all duration-200 border-0">
+                                    فروش
+                                </button>
+                                <button type="button" @click="listingType = 'rental'"
+                                    :class="listingType === 'rental' ? 'bg-primary-500 text-white border-primary-500' : 'bg-white text-neutral-600 hover:bg-neutral-50'"
+                                    class="flex-1 py-2.5 text-sm font-semibold transition-all duration-200 border-0">
+                                    اجاره
+                                </button>
+                            </div>
+                            <input type="hidden" name="listing_type" :value="listingType">
+                            @error('listing_type')
+                                <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
                         <x-form-select name="status_id" label="وضعیت ملک"
                                        :options="$propertyStatuses" :selected="$property->status_id" />
                         <x-form-select name="type_id" label="نوع ملک"
@@ -107,15 +126,29 @@
                 <div class="px-6 py-4 border-b border-neutral-100">
                     <h3 class="text-sm font-semibold text-neutral-700 flex items-center gap-2">
                         <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        قیمت و آدرس
+                        <span x-text="listingType === 'rental' ? 'اجاره و آدرس' : 'قیمت و آدرس'"></span>
                     </h3>
                 </div>
                 <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                        <x-form-input name="price" type="number" label="قیمت (تومان)" :value="$property->price" />
-                        <x-form-select name="owner_id" label="صاحب ملک"
-                                       :options="$users" :selected="$property->owner_id" />
+                    {{-- Sale Price --}}
+                    <div x-show="listingType === 'sale'" x-transition>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                            <x-form-input name="price" type="number" label="قیمت (تومان)" :value="$property->price" />
+                            <x-form-select name="owner_id" label="صاحب ملک"
+                                           :options="$users" :selected="$property->owner_id" />
+                        </div>
                     </div>
+
+                    {{-- Rental Fields --}}
+                    <div x-show="listingType === 'rental'" x-transition>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                            <x-form-input name="deposit_amount" type="number" label="مبلغ رهن (تومان)" :value="$property->deposit_amount" />
+                            <x-form-input name="rent_amount" type="number" label="مبلغ اجاره ماهانه (تومان)" :value="$property->rent_amount" />
+                            <x-form-select name="owner_id" label="صاحب ملک"
+                                           :options="$users" :selected="$property->owner_id" />
+                        </div>
+                    </div>
+
                     <div class="mt-5">
                         <x-form-input name="address_fa" label="آدرس کامل" :value="$property->address_fa" />
                     </div>
@@ -132,4 +165,12 @@
             </div>
         </form>
     </div>
+
+    <script>
+        function propertyForm() {
+            return {
+                listingType: '{{ old('listing_type', $property->listing_type) }}'
+            }
+        }
+    </script>
 </x-admin-layout>

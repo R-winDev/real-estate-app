@@ -33,6 +33,7 @@ class PropertyCrudTest extends TestCase
             'has_storage' => false,
             'has_balcony' => true,
             'has_garden' => false,
+            'listing_type' => 'sale',
         ];
     }
 

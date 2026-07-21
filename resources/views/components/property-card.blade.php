@@ -2,6 +2,7 @@
 
 @php
     $primaryImage = $property->images->firstWhere('is_primary', true) ?? $property->images->sortBy('sort_order')->first();
+    $isRental = $property->listing_type === 'rental';
 @endphp
 
 <a href="{{ route('properties.show', $property) }}" class="group rounded-xl border border-neutral-200 bg-white overflow-hidden flex flex-col cursor-pointer hover:shadow-card-hover hover:border-neutral-300 hover:-translate-y-1 transition-all duration-300">
@@ -18,10 +19,17 @@
         <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
         @if($property->status)
-            <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg text-[11px] font-bold backdrop-blur-md
-                {{ $property->status?->slug === 'active' ? 'bg-success-500/90 text-white shadow-lg shadow-success-500/20' : ($property->status?->slug === 'sold' ? 'bg-warning-500/90 text-white shadow-lg shadow-warning-500/20' : 'bg-neutral-600/90 text-white shadow-lg shadow-neutral-600/20') }}">
-                {{ $property->status?->name_fa }}
-            </span>
+            @if($property->status?->slug === 'available_for_rent')
+                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-accent-500 text-white shadow-lg shadow-accent-500/25">{{ $property->status?->name_fa }}</span>
+            @elseif($property->status?->slug === 'rented_out')
+                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-warning-500 text-white shadow-lg shadow-warning-500/25">{{ $property->status?->name_fa }}</span>
+            @elseif($property->status?->slug === 'unsold')
+                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-success-500 text-white shadow-lg shadow-success-500/25">{{ $property->status?->name_fa }}</span>
+            @elseif($property->status?->slug === 'sold')
+                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-danger-500 text-white shadow-lg shadow-danger-500/25">{{ $property->status?->name_fa }}</span>
+            @else
+                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-neutral-600 text-white shadow-lg shadow-neutral-600/25">{{ $property->status?->name_fa }}</span>
+            @endif
         @endif
 
         @if($property->is_sold)
@@ -67,10 +75,24 @@
         @endif
 
         <div class="mt-auto pt-3 border-t border-neutral-100 flex items-center justify-between">
-            <div>
-                <div class="text-lg font-extrabold text-neutral-950 leading-tight">{{ number_format($property->price) }}</div>
-                <div class="text-[11px] text-neutral-400 font-medium">تومان</div>
-            </div>
+            @if($isRental)
+                <div class="space-y-0.5">
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[10px] text-accent-600 font-bold bg-accent-50 px-1.5 py-0.5 rounded">رهن</span>
+                        <span class="text-sm font-extrabold text-neutral-950">{{ number_format($property->deposit_amount ?? 0) }}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[10px] text-primary-600 font-bold bg-primary-50 px-1.5 py-0.5 rounded">اجاره</span>
+                        <span class="text-sm font-extrabold text-primary-700">{{ number_format($property->rent_amount ?? 0) }}</span>
+                        <span class="text-[10px] text-neutral-400 font-medium">ماهانه</span>
+                    </div>
+                </div>
+            @else
+                <div>
+                    <div class="text-lg font-extrabold text-neutral-950 leading-tight">{{ number_format($property->price) }}</div>
+                    <div class="text-[11px] text-neutral-400 font-medium">تومان</div>
+                </div>
+            @endif
             <span class="text-xs text-accent-600 font-semibold flex items-center gap-1 group-hover:gap-2 transition-all duration-200">
                 مشاهده
                 <svg class="w-3.5 h-3.5 icon-chevron transition-transform duration-200 group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>

@@ -13,6 +13,11 @@ use Illuminate\Http\Request;
 
 class PropertyController extends Controller
 {
+    private function getAvailableStatusSlugs(): array
+    {
+        return ['unsold', 'available_for_rent'];
+    }
+
     public function index(Request $request)
     {
         $isAdmin = auth()->check() && auth()->user()->isAdmin();
@@ -20,9 +25,9 @@ class PropertyController extends Controller
         $query = Property::with(['location', 'type', 'status', 'images']);
 
         if (!$isAdmin) {
-            $availableStatusId = PropertyStatus::where('slug', 'unsold')->value('id');
-            if ($availableStatusId) {
-                $query->where('status_id', $availableStatusId);
+            $availableStatusIds = PropertyStatus::whereIn('slug', $this->getAvailableStatusSlugs())->pluck('id');
+            if ($availableStatusIds->isNotEmpty()) {
+                $query->whereIn('status_id', $availableStatusIds);
             } else {
                 $query->whereRaw('0 = 1');
             }
@@ -37,6 +42,10 @@ class PropertyController extends Controller
             });
         }
 
+        if ($request->filled('listing_type')) {
+            $query->where('listing_type', $request->listing_type);
+        }
+
         if ($request->filled('type_id')) {
             $query->where('type_id', $request->type_id);
         }
@@ -49,12 +58,28 @@ class PropertyController extends Controller
             $query->where('status_id', $request->status_id);
         }
 
-        if ($request->filled('min_price')) {
-            $query->where('price', '>=', $request->min_price);
-        }
+        $listingType = $request->get('listing_type', 'sale');
 
-        if ($request->filled('max_price')) {
-            $query->where('price', '<=', $request->max_price);
+        if ($listingType === 'rental') {
+            if ($request->filled('min_deposit')) {
+                $query->where('deposit_amount', '>=', $request->min_deposit);
+            }
+            if ($request->filled('max_deposit')) {
+                $query->where('deposit_amount', '<=', $request->max_deposit);
+            }
+            if ($request->filled('min_rent')) {
+                $query->where('rent_amount', '>=', $request->min_rent);
+            }
+            if ($request->filled('max_rent')) {
+                $query->where('rent_amount', '<=', $request->max_rent);
+            }
+        } else {
+            if ($request->filled('min_price')) {
+                $query->where('price', '>=', $request->min_price);
+            }
+            if ($request->filled('max_price')) {
+                $query->where('price', '<=', $request->max_price);
+            }
         }
 
         if ($request->filled('bedrooms')) {
@@ -63,8 +88,8 @@ class PropertyController extends Controller
 
         $sort = $request->get('sort', 'latest');
         match($sort) {
-            'price_asc' => $query->orderBy('price', 'asc'),
-            'price_desc' => $query->orderBy('price', 'desc'),
+            'price_asc' => $query->orderBy($listingType === 'rental' ? 'rent_amount' : 'price', 'asc'),
+            'price_desc' => $query->orderBy($listingType === 'rental' ? 'rent_amount' : 'price', 'desc'),
             'area' => $query->orderBy('area_total', 'desc'),
             default => $query->latest(),
         };
@@ -73,7 +98,7 @@ class PropertyController extends Controller
 
         $propertyTypes = PropertyType::all();
         $locations = Location::whereNull('parent_id')->get();
-        $propertyStatuses = $isAdmin ? PropertyStatus::all() : PropertyStatus::where('slug', 'unsold')->get();
+        $propertyStatuses = $isAdmin ? PropertyStatus::all() : PropertyStatus::whereIn('slug', $this->getAvailableStatusSlugs())->get();
 
         return view('properties.index', compact('properties', 'propertyTypes', 'locations', 'propertyStatuses'));
     }
@@ -100,8 +125,8 @@ class PropertyController extends Controller
         $isAdmin = auth()->check() && auth()->user()->isAdmin();
 
         if (!$isAdmin) {
-            $availableStatusId = PropertyStatus::where('slug', 'unsold')->value('id');
-            if (!$availableStatusId || $property->status_id !== $availableStatusId) {
+            $availableStatusIds = PropertyStatus::whereIn('slug', $this->getAvailableStatusSlugs())->pluck('id');
+            if (!$availableStatusIds->contains($property->status_id)) {
                 abort(404);
             }
         }
@@ -110,6 +135,7 @@ class PropertyController extends Controller
 
         $similarQuery = Property::with(['location', 'type', 'status', 'images'])
             ->where('id', '!=', $property->id)
+            ->where('listing_type', $property->listing_type)
             ->where(function ($q) use ($property) {
                 if ($property->type_id) {
                     $q->where('type_id', $property->type_id);
@@ -120,9 +146,9 @@ class PropertyController extends Controller
             });
 
         if (!$isAdmin) {
-            $availableStatusId = PropertyStatus::where('slug', 'unsold')->value('id');
-            if ($availableStatusId) {
-                $similarQuery->where('status_id', $availableStatusId);
+            $availableStatusIds = PropertyStatus::whereIn('slug', $this->getAvailableStatusSlugs())->pluck('id');
+            if ($availableStatusIds->isNotEmpty()) {
+                $similarQuery->whereIn('status_id', $availableStatusIds);
             } else {
                 $similarQuery->whereRaw('0 = 1');
             }

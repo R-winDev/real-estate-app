@@ -30,26 +30,26 @@
                 <p class="text-xs text-neutral-500 font-medium">کل املاک</p>
             </div>
 
-            {{-- Active Properties --}}
+            {{-- For Sale --}}
             <div class="rounded-xl border border-neutral-200 bg-white p-5">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-11 h-11 rounded-xl bg-success-50 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-success-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <svg class="w-5 h-5 text-success-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                 </div>
-                <p class="text-2xl font-bold text-neutral-950 mb-0.5">{{ number_format($stats['active']) }}</p>
-                <p class="text-xs text-neutral-500 font-medium">فعال</p>
+                <p class="text-2xl font-bold text-neutral-950 mb-0.5">{{ number_format($stats['for_sale']) }}</p>
+                <p class="text-xs text-neutral-500 font-medium">املاک فروشی</p>
             </div>
 
-            {{-- Sold Properties --}}
+            {{-- For Rent --}}
             <div class="rounded-xl border border-neutral-200 bg-white p-5">
                 <div class="flex items-center justify-between mb-4">
-                    <div class="w-11 h-11 rounded-xl bg-warning-50 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-warning-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <div class="w-11 h-11 rounded-xl bg-accent-50 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                     </div>
                 </div>
-                <p class="text-2xl font-bold text-neutral-950 mb-0.5">{{ number_format($stats['sold']) }}</p>
-                <p class="text-xs text-neutral-500 font-medium">فروخته شده</p>
+                <p class="text-2xl font-bold text-neutral-950 mb-0.5">{{ number_format($stats['for_rent']) }}</p>
+                <p class="text-xs text-neutral-500 font-medium">املاک اجاره‌ای</p>
             </div>
 
             {{-- Pending Inquiries --}}
@@ -68,7 +68,34 @@
         </div>
 
         {{-- Secondary Stats --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="rounded-xl border border-neutral-200 bg-white p-4 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-success-50 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5 text-success-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <p class="text-lg font-bold text-neutral-950 leading-none mb-0.5">{{ number_format($stats['sale_active']) }}</p>
+                    <p class="text-xs text-neutral-500 font-medium">فروش فعال</p>
+                </div>
+            </div>
+            <div class="rounded-xl border border-neutral-200 bg-white p-4 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-accent-50 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <p class="text-lg font-bold text-neutral-950 leading-none mb-0.5">{{ number_format($stats['rental_active']) }}</p>
+                    <p class="text-xs text-neutral-500 font-medium">اجاره فعال</p>
+                </div>
+            </div>
+            <div class="rounded-xl border border-neutral-200 bg-white p-4 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-warning-50 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5 text-warning-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <p class="text-lg font-bold text-neutral-950 leading-none mb-0.5">{{ number_format($stats['sold']) }}</p>
+                    <p class="text-xs text-neutral-500 font-medium">فروخته شده</p>
+                </div>
+            </div>
             <div class="rounded-xl border border-neutral-200 bg-white p-4 flex items-center gap-3">
                 <div class="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
                     <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -76,24 +103,6 @@
                 <div>
                     <p class="text-lg font-bold text-neutral-950 leading-none mb-0.5">{{ number_format($stats['locations']) }}</p>
                     <p class="text-xs text-neutral-500 font-medium">محله‌ها</p>
-                </div>
-            </div>
-            <div class="rounded-xl border border-neutral-200 bg-white p-4 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-warning-50 flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5 text-warning-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-                </div>
-                <div>
-                    <p class="text-lg font-bold text-neutral-950 leading-none mb-0.5">{{ number_format($stats['types']) }}</p>
-                    <p class="text-xs text-neutral-500 font-medium">نوع ملک</p>
-                </div>
-            </div>
-            <div class="rounded-xl border border-neutral-200 bg-white p-4 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-success-50 flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5 text-success-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                </div>
-                <div>
-                    <p class="text-lg font-bold text-neutral-950 leading-none mb-0.5">{{ number_format($stats['users']) }}</p>
-                    <p class="text-xs text-neutral-500 font-medium">کاربران</p>
                 </div>
             </div>
             <div class="rounded-xl border border-neutral-200 bg-white p-4 flex items-center gap-3">
@@ -142,11 +151,21 @@
                             <a href="{{ route('properties.show', $property) }}" class="flex items-center gap-3.5 px-5 py-3.5 hover:bg-neutral-50 transition-all duration-200 group">
                                 <div class="flex-1 min-w-0">
                                     <h4 class="text-sm font-semibold text-neutral-950 truncate group-hover:text-primary-600 transition-colors">{{ $property->title }}</h4>
-                                    <p class="text-xs text-neutral-500 truncate mt-0.5">{{ $property->location?->name ?? '-' }}</p>
+                                    <p class="text-xs text-neutral-500 truncate mt-0.5">
+                                        {{ $property->location?->name ?? '-' }}
+                                        @if($property->listing_type === 'rental')
+                                            <span class="inline-flex items-center px-1.5 py-0.5 bg-accent-50 text-accent-600 rounded text-[9px] font-bold mr-1">اجاره‌ای</span>
+                                        @endif
+                                    </p>
                                 </div>
                                 <div class="text-left shrink-0">
-                                    <div class="text-sm font-bold text-neutral-950">{{ number_format($property->price) }}</div>
-                                    <div class="text-[10px] text-neutral-400 font-medium">تومان</div>
+                                    @if($property->listing_type === 'rental')
+                                        <div class="text-xs font-bold text-accent-600">رهن: {{ number_format($property->deposit_amount ?? 0) }}</div>
+                                        <div class="text-[10px] text-primary-600 font-medium">اجاره: {{ number_format($property->rent_amount ?? 0) }}</div>
+                                    @else
+                                        <div class="text-sm font-bold text-neutral-950">{{ number_format($property->price) }}</div>
+                                        <div class="text-[10px] text-neutral-400 font-medium">تومان</div>
+                                    @endif
                                 </div>
                             </a>
                         @endforeach

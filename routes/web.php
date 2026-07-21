@@ -16,10 +16,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $availableStatusId = \App\Models\PropertyStatus::where('slug', 'unsold')->value('id');
+    $availableStatusIds = \App\Models\PropertyStatus::whereIn('slug', ['unsold', 'available_for_rent'])->pluck('id');
 
     $featuredProperties = Property::with(['location', 'type', 'status', 'images'])
-        ->when($availableStatusId, fn ($q) => $q->where('status_id', $availableStatusId), fn ($q) => $q->whereRaw('0 = 1'))
+        ->when($availableStatusIds->isNotEmpty(), fn ($q) => $q->whereIn('status_id', $availableStatusIds), fn ($q) => $q->whereRaw('0 = 1'))
         ->latest()
         ->take(6)
         ->get();
@@ -28,7 +28,7 @@ Route::get('/', function () {
     $locations = Location::whereNull('parent_id')->get();
 
     $stats = [
-        'total_properties' => Property::when($availableStatusId, fn ($q) => $q->where('status_id', $availableStatusId), fn ($q) => $q->whereRaw('0 = 1'))->count(),
+        'total_properties' => Property::when($availableStatusIds->isNotEmpty(), fn ($q) => $q->whereIn('status_id', $availableStatusIds), fn ($q) => $q->whereRaw('0 = 1'))->count(),
         'total_locations' => Location::count(),
         'total_types' => PropertyType::count(),
         'total_users' => User::count(),
@@ -38,11 +38,20 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/dashboard', function () {
+    $saleActiveStatusId = \App\Models\PropertyStatus::where('slug', 'unsold')->value('id');
+    $rentalActiveStatusId = \App\Models\PropertyStatus::where('slug', 'available_for_rent')->value('id');
+    $rentedOutStatusId = \App\Models\PropertyStatus::where('slug', 'rented_out')->value('id');
+
     $stats = [
         'total' => Property::count(),
         'active' => Property::where('is_sold', false)->where('status_id', 1)->count(),
         'sold' => Property::where('is_sold', true)->count(),
         'inactive' => Property::where('status_id', '!=', 1)->where('is_sold', false)->count(),
+        'for_sale' => Property::where('listing_type', 'sale')->count(),
+        'for_rent' => Property::where('listing_type', 'rental')->count(),
+        'sale_active' => $saleActiveStatusId ? Property::where('listing_type', 'sale')->where('status_id', $saleActiveStatusId)->count() : 0,
+        'rental_active' => $rentalActiveStatusId ? Property::where('listing_type', 'rental')->where('status_id', $rentalActiveStatusId)->count() : 0,
+        'rented_out' => $rentedOutStatusId ? Property::where('listing_type', 'rental')->where('status_id', $rentedOutStatusId)->count() : 0,
         'locations' => Location::count(),
         'types' => PropertyType::count(),
         'users' => User::count(),

@@ -30,4 +30,14 @@ class PropertyStatusFactory extends Factory
     {
         return $this->state(fn () => ['name' => 'blacklisted', 'name_fa' => 'بلک لیست', 'slug' => 'blacklisted']);
     }
+
+    public function availableForRent(): static
+    {
+        return $this->state(fn () => ['name' => 'available_for_rent', 'name_fa' => 'اجاره‌ای', 'slug' => 'available_for_rent']);
+    }
+
+    public function rentedOut(): static
+    {
+        return $this->state(fn () => ['name' => 'rented_out', 'name_fa' => 'اجاره رفته', 'slug' => 'rented_out']);
+    }
 }

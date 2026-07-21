@@ -109,10 +109,26 @@
                             </div>
                         @endif
 
-                        <div class="bg-gradient-to-l from-primary-50 to-primary-100/30 rounded-xl p-5 border border-primary-100">
-                            <div class="text-sm text-primary-600 mb-1">قیمت</div>
-                            <div class="text-3xl font-extrabold text-primary-700">{{ number_format($property->price) }} <span class="text-lg font-bold">تومان</span></div>
-                        </div>
+                        @if($property->listing_type === 'rental')
+                            <div class="bg-gradient-to-l from-accent-50 to-accent-100/30 rounded-xl p-5 border border-accent-100 space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex-1">
+                                        <div class="text-sm text-accent-600 mb-1">مبلغ رهن</div>
+                                        <div class="text-2xl font-extrabold text-accent-700">{{ number_format($property->deposit_amount ?? 0) }} <span class="text-sm font-bold">تومان</span></div>
+                                    </div>
+                                    <div class="w-px h-12 bg-accent-200"></div>
+                                    <div class="flex-1">
+                                        <div class="text-sm text-primary-600 mb-1">اجاره ماهانه</div>
+                                        <div class="text-2xl font-extrabold text-primary-700">{{ number_format($property->rent_amount ?? 0) }} <span class="text-sm font-bold">تومان</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="bg-gradient-to-l from-primary-50 to-primary-100/30 rounded-xl p-5 border border-primary-100">
+                                <div class="text-sm text-primary-600 mb-1">قیمت</div>
+                                <div class="text-3xl font-extrabold text-primary-700">{{ number_format($property->price) }} <span class="text-lg font-bold">تومان</span></div>
+                            </div>
+                        @endif
 
                         @if($property->description)
                             <div class="mt-5">

@@ -15,6 +15,7 @@ class Property extends Model
     use HasFactory;
     protected $fillable = [
         'title',
+        'listing_type',
         'description',
         'area_total',
         'area_useful',
@@ -36,6 +37,8 @@ class Property extends Model
         'has_garden',
         'status_id',
         'price',
+        'deposit_amount',
+        'rent_amount',
         'is_sold',
         'address_fa',
         'type_id',
@@ -50,6 +53,8 @@ class Property extends Model
         'has_garden' => 'boolean',
         'is_sold' => 'boolean',
         'price' => 'integer',
+        'deposit_amount' => 'integer',
+        'rent_amount' => 'integer',
     ];
 
     public function status(): BelongsTo
@@ -111,5 +116,15 @@ class Property extends Model
     public function features(): BelongsToMany
     {
         return $this->belongsToMany(Feature::class, 'property_features');
+    }
+
+    public function isForSale(): bool
+    {
+        return $this->listing_type === 'sale';
+    }
+
+    public function isForRent(): bool
+    {
+        return $this->listing_type === 'rental';
     }
 }

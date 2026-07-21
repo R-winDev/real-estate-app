@@ -16,7 +16,8 @@ class PropertyFlashMessageTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'Test Property Flash Message',
-            'price' => 10000000
+            'price' => 10000000,
+            'listing_type' => 'sale',
         ]);
 
         $response->assertSessionHas('success');

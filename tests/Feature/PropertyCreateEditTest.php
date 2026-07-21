@@ -67,6 +67,7 @@ class PropertyCreateEditTest extends TestCase
             'land_length' => 20,
             'land_width' => 15,
             'land_area' => 300,
+            'listing_type' => 'sale',
         ];
     }
 

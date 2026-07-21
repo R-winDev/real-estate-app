@@ -25,6 +25,7 @@ class PropertyValidationTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 12345,
+            'listing_type' => 'sale',
         ]);
 
         $response->assertSessionHasErrors('title');
@@ -37,6 +38,7 @@ class PropertyValidationTest extends TestCase
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
             'price' => 'not-a-number',
+            'listing_type' => 'sale',
         ]);
 
         $response->assertSessionHasErrors('price');
@@ -49,6 +51,7 @@ class PropertyValidationTest extends TestCase
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
             'bedrooms' => -1,
+            'listing_type' => 'sale',
         ]);
 
         $response->assertSessionHasErrors('bedrooms');
@@ -61,6 +64,7 @@ class PropertyValidationTest extends TestCase
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
             'orientation' => 'north-west',
+            'listing_type' => 'sale',
         ]);
 
         $response->assertSessionHasErrors('orientation');
@@ -73,6 +77,7 @@ class PropertyValidationTest extends TestCase
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
             'owner_id' => 99999,
+            'listing_type' => 'sale',
         ]);
 
         $response->assertSessionHasErrors('owner_id');
@@ -88,6 +93,7 @@ class PropertyValidationTest extends TestCase
             'area_total' => 120.50,
             'bedrooms' => 3,
             'owner_id' => $user->id,
+            'listing_type' => 'sale',
         ]);
 
         $response->assertSessionHasNoErrors();
@@ -101,7 +107,8 @@ class PropertyValidationTest extends TestCase
         $response = $this->actingAs($user)->post(route('properties.store'), [
             'title' => 'ملک تست',
             'price' => 2500000000,
-            'area_total' => 'words'
+            'area_total' => 'words',
+            'listing_type' => 'sale',
         ]);
 
         $response->assertSessionHasErrors('area_total');
@@ -116,6 +123,7 @@ class PropertyValidationTest extends TestCase
             'price' => 2500000000,
             'area_total' => 120.50,
             'year_built' => 1200,
+            'listing_type' => 'sale',
         ]);
 
         $response->assertSessionHasErrors('year_built');
@@ -133,6 +141,7 @@ class PropertyValidationTest extends TestCase
             'price' => 2500000000,
             'area_total' => 120.50,
             'year_built' => 1404,
+            'listing_type' => 'sale',
         ]);
 
         $response->assertSessionHasNoErrors();
@@ -146,6 +155,7 @@ class PropertyValidationTest extends TestCase
             'title' => 'ملک تست',
             'price' => 2500000000,
             'type_id' => 999999,
+            'listing_type' => 'sale',
         ]);
         $response->assertSessionHasErrors('type_id');
     }
