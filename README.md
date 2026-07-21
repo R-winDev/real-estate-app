@@ -1,18 +1,36 @@
-# Real Estate App
+# Real Estate App (املاک)
 
-A modern real estate listing platform built with Laravel, featuring a full admin panel, property management, and customer inquiry system. Fully RTL (Persian) with a polished, professional UI.
+A modern real estate listing platform built with Laravel, designed for the Iranian property market. Features a full admin panel, property management with rental support (رهن/اجاره), customer inquiry system, and a polished RTL (Persian) UI.
+
+## Screenshots
+
+### Homepage
+![Homepage](docs/screenshots/img.png)
+
+### Property Listings
+![Property Listings](docs/screenshots/img_1.png)
+
+### Property Detail
+![Property Detail](docs/screenshots/img_2.png)
+
+### Admin Dashboard
+![Admin Dashboard](docs/screenshots/img_3.png)
+
+### Property Management
+![Property Management](docs/screenshots/img_4.png)
 
 ## Features
 
 ### Public
 - **Property Listings** — Browse properties with search, filters (type, location, price, bedrooms), grid/list view toggle
+- **Rental Support** — Separate listing types for sale (فروش) and rental (اجاره) with deposit (رهن) and monthly rent (اجاره) display
 - **Property Detail Pages** — Image gallery with carousel, key specs, full details, amenities, similar properties
 - **Inquiry System** — Visit request form with date/time picker, spam protection (honeypot + throttle)
 - **Responsive Design** — Mobile-first, works on all screen sizes
 
 ### Admin Panel
 - **Dashboard** — Stats overview, recent properties, recent inquiries, quick actions
-- **Property Management** — Full CRUD with image support, status tracking, owner assignment
+- **Property Management** — Full CRUD with image support, status tracking, owner assignment, listing type toggle
 - **Location Management** — Hierarchical locations (parent/child), CRUD operations
 - **User Management** — Create/edit users, admin flag toggle, force password change
 - **Inquiry Management** — View/filter/update status (pending → contacted → closed), delete
@@ -28,12 +46,12 @@ A modern real estate listing platform built with Laravel, featuring a full admin
 
 ## Tech Stack
 
-- **Backend:** Laravel 13 (PHP 8.3+)
+- **Backend:** Laravel 11 (PHP 8.3+)
 - **Frontend:** Blade, Tailwind CSS, Alpine.js
 - **Database:** MySQL 8.0
 - **Web Server:** Nginx
 - **Containerization:** Docker Compose
-- **Testing:** PHPUnit (288+ tests)
+- **Testing:** PHPUnit (455+ tests)
 - **Font:** Vazirmatn (Persian)
 - **Design:** RTL layout, Sneat-inspired admin dashboard
 
@@ -64,11 +82,17 @@ docker compose exec php php artisan key:generate
 # 6. Run database migrations
 docker compose exec php php artisan migrate
 
-# 7. (Optional) Seed sample data
+# 7. Seed database (creates admin user + sample data)
 docker compose exec php php artisan db:seed
 ```
 
 The application will be available at [http://localhost:8080](http://localhost:8080).
+
+### Default Admin Credentials
+
+After seeding, you can log in with:
+- **Email:** admin@example.com
+- **Password:** password
 
 ## Development
 
@@ -81,6 +105,9 @@ docker compose exec php php artisan <command>
 
 # Run tests
 docker compose exec php php artisan test
+
+# Run specific test file
+docker compose exec php php artisan test tests/Feature/RentalPropertyTest.php
 
 # Run composer commands
 docker compose exec php composer <command>
@@ -121,6 +148,9 @@ docker compose down -v
 │   ├── factories/          # Model factories
 │   ├── migrations/         # Database migrations
 │   └── seeders/            # Database seeders
+├── docs/screenshots/       # README screenshots
+├── public/images/          # Static images
+│   └── properties/         # Property type placeholders
 ├── resources/
 │   ├── css/app.css         # Tailwind + custom components
 │   └── views/
@@ -141,10 +171,12 @@ docker compose down -v
 
 ## Testing
 
-The project includes 288+ feature tests covering:
+The project includes 455+ feature tests covering:
+
 - Admin authorization & middleware
 - Dashboard access & data display
 - Property CRUD operations
+- Rental property support (listing types, deposit/rent filtering, visibility)
 - Location management
 - User management
 - Inquiry management
@@ -158,6 +190,9 @@ docker compose exec php php artisan test
 
 # Run specific test file
 docker compose exec php php artisan test tests/Feature/AdminDashboardTest.php
+
+# Run rental-specific tests
+docker compose exec php php artisan test tests/Feature/RentalPropertyTest.php
 ```
 
 ## License
