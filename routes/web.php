@@ -16,7 +16,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    $availableStatusId = \App\Models\PropertyStatus::where('slug', 'unsold')->value('id');
+
     $featuredProperties = Property::with(['location', 'type', 'status', 'images'])
+        ->when($availableStatusId, fn ($q) => $q->where('status_id', $availableStatusId), fn ($q) => $q->whereRaw('0 = 1'))
         ->latest()
         ->take(6)
         ->get();
@@ -25,7 +28,7 @@ Route::get('/', function () {
     $locations = Location::whereNull('parent_id')->get();
 
     $stats = [
-        'total_properties' => Property::count(),
+        'total_properties' => Property::when($availableStatusId, fn ($q) => $q->where('status_id', $availableStatusId), fn ($q) => $q->whereRaw('0 = 1'))->count(),
         'total_locations' => Location::count(),
         'total_types' => PropertyType::count(),
         'total_users' => User::count(),

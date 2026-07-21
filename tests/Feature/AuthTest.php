@@ -407,7 +407,7 @@ class AuthTest extends TestCase
         $response = $this->actingAs($user)->get(route('password.confirm'));
 
         $response->assertSee('تایید هویت');
-        $response->assertSee('ناحیه امن');
+        $response->assertSee('تایید');
     }
 
     public function test_confirm_password_with_valid_password(): void

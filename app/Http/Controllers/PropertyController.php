@@ -15,7 +15,18 @@ class PropertyController extends Controller
 {
     public function index(Request $request)
     {
+        $isAdmin = auth()->check() && auth()->user()->isAdmin();
+
         $query = Property::with(['location', 'type', 'status', 'images']);
+
+        if (!$isAdmin) {
+            $availableStatusId = PropertyStatus::where('slug', 'unsold')->value('id');
+            if ($availableStatusId) {
+                $query->where('status_id', $availableStatusId);
+            } else {
+                $query->whereRaw('0 = 1');
+            }
+        }
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -34,7 +45,7 @@ class PropertyController extends Controller
             $query->where('location_id', $request->location_id);
         }
 
-        if ($request->filled('status_id')) {
+        if ($isAdmin && $request->filled('status_id')) {
             $query->where('status_id', $request->status_id);
         }
 
@@ -62,7 +73,7 @@ class PropertyController extends Controller
 
         $propertyTypes = PropertyType::all();
         $locations = Location::whereNull('parent_id')->get();
-        $propertyStatuses = PropertyStatus::all();
+        $propertyStatuses = $isAdmin ? PropertyStatus::all() : PropertyStatus::where('slug', 'unsold')->get();
 
         return view('properties.index', compact('properties', 'propertyTypes', 'locations', 'propertyStatuses'));
     }
@@ -86,9 +97,18 @@ class PropertyController extends Controller
 
     public function show(Property $property)
     {
+        $isAdmin = auth()->check() && auth()->user()->isAdmin();
+
+        if (!$isAdmin) {
+            $availableStatusId = PropertyStatus::where('slug', 'unsold')->value('id');
+            if (!$availableStatusId || $property->status_id !== $availableStatusId) {
+                abort(404);
+            }
+        }
+
         $property->load('location', 'type', 'status', 'owner', 'images', 'features');
 
-        $similarProperties = Property::with(['location', 'type', 'status', 'images'])
+        $similarQuery = Property::with(['location', 'type', 'status', 'images'])
             ->where('id', '!=', $property->id)
             ->where(function ($q) use ($property) {
                 if ($property->type_id) {
@@ -97,10 +117,18 @@ class PropertyController extends Controller
                 if ($property->location_id) {
                     $q->orWhere('location_id', $property->location_id);
                 }
-            })
-            ->latest()
-            ->take(3)
-            ->get();
+            });
+
+        if (!$isAdmin) {
+            $availableStatusId = PropertyStatus::where('slug', 'unsold')->value('id');
+            if ($availableStatusId) {
+                $similarQuery->where('status_id', $availableStatusId);
+            } else {
+                $similarQuery->whereRaw('0 = 1');
+            }
+        }
+
+        $similarProperties = $similarQuery->latest()->take(3)->get();
 
         return view('properties.show', compact('property', 'similarProperties'));
     }

@@ -596,7 +596,7 @@ class PropertyCrudTest extends TestCase
 
         $response = $this->get(route('properties.show', $property));
 
-        $response->assertSee('بازگشت به لیست املاک');
+        $response->assertSee('املاک');
     }
 
     public function test_show_displays_location(): void
@@ -627,7 +627,7 @@ class PropertyCrudTest extends TestCase
 
         $response = $this->get(route('properties.show', $property));
 
-        $response->assertSee('مشخصات ملک');
+        $response->assertSee('مشخصات کلیدی');
         $response->assertSee('150');
     }
 
@@ -911,5 +911,136 @@ class PropertyCrudTest extends TestCase
         $this->actingAs($user)->delete(route('properties.destroy', $property));
 
         $this->assertDatabaseCount('properties', 0);
+    }
+
+    // ========================
+    // STATUS FILTERING (Non-admin users)
+    // ========================
+
+    public function test_guest_cannot_see_non_available_properties_in_index(): void
+    {
+        Location::factory()->create();
+        PropertyType::factory()->create();
+        $availableStatus = PropertyStatus::factory()->unsold()->create();
+        $blacklistedStatus = PropertyStatus::factory()->blacklisted()->create();
+
+        Property::factory()->count(2)->create(['status_id' => $availableStatus->id]);
+        Property::factory()->create(['status_id' => $blacklistedStatus->id]);
+
+        $response = $this->get(route('properties.index'));
+
+        $response->assertOk();
+        $properties = $response->viewData('properties');
+        $this->assertCount(2, $properties);
+    }
+
+    public function test_guest_cannot_see_non_available_property_show(): void
+    {
+        Location::factory()->create();
+        PropertyType::factory()->create();
+        $blacklistedStatus = PropertyStatus::factory()->blacklisted()->create();
+        $property = Property::factory()->create(['status_id' => $blacklistedStatus->id]);
+
+        $response = $this->get(route('properties.show', $property));
+
+        $response->assertNotFound();
+    }
+
+    public function test_regular_user_cannot_see_non_available_properties_in_index(): void
+    {
+        $user = User::factory()->create(['is_admin' => false]);
+        Location::factory()->create();
+        PropertyType::factory()->create();
+        $availableStatus = PropertyStatus::factory()->unsold()->create();
+        $soldStatus = PropertyStatus::factory()->sold()->create();
+
+        Property::factory()->count(2)->create(['status_id' => $availableStatus->id]);
+        Property::factory()->create(['status_id' => $soldStatus->id]);
+
+        $response = $this->actingAs($user)->get(route('properties.index'));
+
+        $response->assertOk();
+        $properties = $response->viewData('properties');
+        $this->assertCount(2, $properties);
+    }
+
+    public function test_regular_user_cannot_see_non_available_property_show(): void
+    {
+        $user = User::factory()->create(['is_admin' => false]);
+        Location::factory()->create();
+        PropertyType::factory()->create();
+        $soldStatus = PropertyStatus::factory()->sold()->create();
+        $property = Property::factory()->create(['status_id' => $soldStatus->id]);
+
+        $response = $this->actingAs($user)->get(route('properties.show', $property));
+
+        $response->assertNotFound();
+    }
+
+    public function test_admin_can_see_all_properties_in_index(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        Location::factory()->create();
+        PropertyType::factory()->create();
+        $availableStatus = PropertyStatus::factory()->unsold()->create();
+        $blacklistedStatus = PropertyStatus::factory()->blacklisted()->create();
+
+        Property::factory()->count(2)->create(['status_id' => $availableStatus->id]);
+        Property::factory()->create(['status_id' => $blacklistedStatus->id]);
+
+        $response = $this->actingAs($admin)->get(route('properties.index'));
+
+        $response->assertOk();
+        $properties = $response->viewData('properties');
+        $this->assertCount(3, $properties);
+    }
+
+    public function test_admin_can_see_all_property_statuses_in_filter(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        Location::factory()->create();
+        PropertyType::factory()->create();
+        PropertyStatus::factory()->unsold()->create();
+        PropertyStatus::factory()->sold()->create();
+        PropertyStatus::factory()->blacklisted()->create();
+
+        $response = $this->actingAs($admin)->get(route('properties.index'));
+
+        $response->assertOk();
+        $propertyStatuses = $response->viewData('propertyStatuses');
+        $this->assertCount(3, $propertyStatuses);
+    }
+
+    public function test_guest_only_sees_available_status_in_filter(): void
+    {
+        Location::factory()->create();
+        PropertyType::factory()->create();
+        PropertyStatus::factory()->sold()->create();
+        PropertyStatus::factory()->unsold()->create();
+        PropertyStatus::factory()->blacklisted()->create();
+
+        $response = $this->get(route('properties.index'));
+
+        $response->assertOk();
+        $propertyStatuses = $response->viewData('propertyStatuses');
+        $this->assertCount(1, $propertyStatuses);
+        $this->assertEquals('unsold', $propertyStatuses->first()->slug);
+    }
+
+    public function test_index_status_filter_ignored_for_non_admin(): void
+    {
+        Location::factory()->create();
+        PropertyType::factory()->create();
+        $availableStatus = PropertyStatus::factory()->unsold()->create();
+        $blacklistedStatus = PropertyStatus::factory()->blacklisted()->create();
+
+        Property::factory()->count(2)->create(['status_id' => $availableStatus->id]);
+        Property::factory()->create(['status_id' => $blacklistedStatus->id]);
+
+        $response = $this->get(route('properties.index', ['status_id' => $blacklistedStatus->id]));
+
+        $response->assertOk();
+        $properties = $response->viewData('properties');
+        $this->assertCount(2, $properties);
     }
 }

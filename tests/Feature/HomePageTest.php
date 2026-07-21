@@ -51,7 +51,7 @@ class HomePageTest extends TestCase
     {
         Location::factory()->create();
         PropertyType::factory()->create();
-        PropertyStatus::factory()->create();
+        PropertyStatus::factory()->unsold()->create();
         Property::factory()->count(3)->create();
 
         $response = $this->get(route('home'));
@@ -59,6 +59,40 @@ class HomePageTest extends TestCase
         $response->assertOk();
         $properties = $response->viewData('featuredProperties');
         $this->assertCount(3, $properties);
+    }
+
+    public function test_home_page_only_shows_available_properties(): void
+    {
+        Location::factory()->create();
+        PropertyType::factory()->create();
+        $availableStatus = PropertyStatus::factory()->unsold()->create();
+        $blacklistedStatus = PropertyStatus::factory()->blacklisted()->create();
+
+        Property::factory()->count(2)->create(['status_id' => $availableStatus->id]);
+        Property::factory()->create(['status_id' => $blacklistedStatus->id]);
+
+        $response = $this->get(route('home'));
+
+        $response->assertOk();
+        $properties = $response->viewData('featuredProperties');
+        $this->assertCount(2, $properties);
+    }
+
+    public function test_home_page_stats_only_count_available_properties(): void
+    {
+        Location::factory()->create();
+        PropertyType::factory()->create();
+        $availableStatus = PropertyStatus::factory()->unsold()->create();
+        $blacklistedStatus = PropertyStatus::factory()->blacklisted()->create();
+
+        Property::factory()->count(2)->create(['status_id' => $availableStatus->id]);
+        Property::factory()->create(['status_id' => $blacklistedStatus->id]);
+
+        $response = $this->get(route('home'));
+
+        $response->assertOk();
+        $stats = $response->viewData('stats');
+        $this->assertEquals(2, $stats['total_properties']);
     }
 
     public function test_home_page_shows_nav_links(): void

@@ -8,15 +8,17 @@ use Illuminate\View\Component;
 
 class FormSelect extends Component
 {
-    /**
-     * Create a new component instance.
-     */
+    public array $options;
+
     public function __construct(
         public string $label,
         public string $name,
-        public array $options = [],
-    )
-    {}
+        mixed $options = [],
+    ) {
+        $this->options = $options instanceof \Illuminate\Support\Collection
+            ? $options->toArray()
+            : (array) $options;
+    }
 
     /**
      * Get the view / contents that represent the component.

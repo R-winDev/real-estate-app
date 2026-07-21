@@ -13,6 +13,17 @@ class PropertyStatusSeeder extends Seeder
      */
     public function run(): void
     {
-        PropertyStatus::factory()->count(4)->create();
+        $statuses = [
+            ['name' => 'unsold', 'name_fa' => 'موجود', 'slug' => 'unsold'],
+            ['name' => 'sold', 'name_fa' => 'فروخته شده', 'slug' => 'sold'],
+            ['name' => 'blacklisted', 'name_fa' => 'بلک لیست', 'slug' => 'blacklisted'],
+        ];
+
+        foreach ($statuses as $status) {
+            PropertyStatus::updateOrCreate(
+                ['slug' => $status['slug']],
+                $status
+            );
+        }
     }
 }

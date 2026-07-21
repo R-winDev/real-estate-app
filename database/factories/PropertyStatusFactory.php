@@ -7,17 +7,27 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PropertyStatusFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            'name'=> fake()->randomElement(['sold', 'unsold', 'blacklisted']),
-            'name_fa'=> fake()->randomElement(['فروخته شده', 'موجود', 'بلک لیست']),
-            'slug'=> fake()->slug(),
+            'name' => 'unsold',
+            'name_fa' => 'موجود',
+            'slug' => 'unsold',
         ];
+    }
+
+    public function unsold(): static
+    {
+        return $this->state(fn () => ['name' => 'unsold', 'name_fa' => 'موجود', 'slug' => 'unsold']);
+    }
+
+    public function sold(): static
+    {
+        return $this->state(fn () => ['name' => 'sold', 'name_fa' => 'فروخته شده', 'slug' => 'sold']);
+    }
+
+    public function blacklisted(): static
+    {
+        return $this->state(fn () => ['name' => 'blacklisted', 'name_fa' => 'بلک لیست', 'slug' => 'blacklisted']);
     }
 }
