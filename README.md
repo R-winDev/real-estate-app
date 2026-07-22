@@ -11,13 +11,13 @@ A modern real estate listing platform built with Laravel, designed for the Irani
 ![Property Listings](docs/screenshots/img_2.png?v=2)
 
 ### Property Search
-![Property Detail](docs/screenshots/img_2.png?v=2)
+![Property Detail](docs/screenshots/img_3.png?v=2)
 
 ### Admin Dashboard
-![Admin Dashboard](docs/screenshots/img_3.png?v=2)
+![Admin Dashboard](docs/screenshots/img_4.png?v=2)
 
 ### Add New Property
-![Property Management](docs/screenshots/img_4.png?v=2)
+![Property Management](docs/screenshots/img_5.png?v=2)
 
 ## Features
 
